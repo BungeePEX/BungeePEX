@@ -39,7 +39,7 @@ public class Lang {
     public static enum MessageType
     {
 
-        BUNGEEPERMS("bungeeperms", ChatColor.GOLD.alt() + "Welcome to BungeePerms, a BungeeCord/Spigot permissions plugin"),
+        BUNGEEPEX("bungeepex", ChatColor.GOLD.alt() + "Welcome to BungeePEX, a BungeeCord/Spigot permissions plugin"),
         VERSION("version", Color.Text.alt() + "Version " + ChatColor.GOLD.alt() + "{0}"),
         AUTHOR("author", Color.Text.alt() + "Author " + ChatColor.GOLD.alt() + "{0}"),
         PERMISSIONS_RELOADED("permissions-reloaded", Color.Text.alt() + "Permissions reloaded"),

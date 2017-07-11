@@ -373,7 +373,7 @@ public class PermissionsChecker
         return isperm;
     }
 
-    protected BungeePEX pm()
+    protected PermissionsManager pm()
     {
         return BungeePEX.getInstance().getPermissionsManager();
     }

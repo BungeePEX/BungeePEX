@@ -3,6 +3,7 @@ package com.xaosia.bungeepex;
 import java.util.logging.Logger;
 
 import com.xaosia.bungeepex.commands.CommandHandler;
+import com.xaosia.bungeepex.tasks.CleanupTask;
 import com.xaosia.bungeepex.utils.Debug;
 import com.xaosia.bungeepex.utils.FileExtractor;
 import com.xaosia.bungeepex.utils.Lang;
