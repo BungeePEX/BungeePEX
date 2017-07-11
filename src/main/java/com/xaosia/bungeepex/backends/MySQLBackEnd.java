@@ -1,5 +1,9 @@
 package com.xaosia.bungeepex.backends;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -137,7 +141,7 @@ public class MySQLBackEnd implements BackEnd {
             }
         }
 
-        UUID uuid = BungeePEX.getInstance().getPermissionsManager().getUUIDPlayerDB().getUUID(mpe.getName());
+        UUID uuid = this.getUUID(mpe.getName());
         PermissionUser u = new PermissionUser(mpe.getName(), uuid, lgroups, new ArrayList<String>(), new HashMap<String, Server>(), null, null, null);
         loadServerWorlds(mpe, u);
 
@@ -165,7 +169,7 @@ public class MySQLBackEnd implements BackEnd {
             }
         }
 
-        String username = BungeePEX.getInstance().getPermissionsManager().getUUIDPlayerDB().getPlayerName(user);
+        String username = this.getPlayerName(user);
         PermissionUser u = new PermissionUser(username, user, lgroups, new ArrayList<String>(), new HashMap<String, Server>(), null, null, null);
         loadServerWorlds(mpe, u);
 
@@ -593,7 +597,7 @@ public class MySQLBackEnd implements BackEnd {
         user.setGroups(lgroups);
 
         //reset & load
-        //user.setExtraPerms(new ArrayList<String>());
+        user.setExtraPerms(new ArrayList<String>());
         user.setServers(new HashMap<String, Server>());
         user.setDisplay(null);
         user.setPrefix(null);
@@ -785,6 +789,134 @@ public class MySQLBackEnd implements BackEnd {
 
         return map;
     }
+
+    @Override
+    public UUID getUUID(String player)
+    {
+        UUID ret = null;
+        Connection connection = null;
+        PreparedStatement stmt = null;
+        ResultSet res = null;
+        try
+        {
+            connection = storageBackend.getPoolManager().getConnection();
+            stmt = connection.prepareStatement("SELECT uuid FROM `" + UUIDPLAYER_TABLE + "` WHERE `player` = ? ORDER BY id ASC LIMIT 1");
+            stmt.setString(1, player);
+            res = stmt.executeQuery();
+            if (res.last())
+            {
+                ret = UUID.fromString(res.getString("uuid"));
+            }
+        }
+        catch (SQLException ex)
+        {
+            BungeePEX.getLogger().log(Level.SEVERE, "Could not execute query", ex);
+        }
+        finally
+        {
+            storageBackend.getPoolManager().close(connection, stmt, res);
+        }
+
+        return ret;
+    }
+
+    @Override
+    public String getPlayerName(UUID uuid)
+    {
+        String ret = null;
+
+        Connection connection = null;
+        PreparedStatement stmt = null;
+        ResultSet res = null;
+        try
+        {
+            connection = storageBackend.getPoolManager().getConnection();
+            stmt = connection.prepareStatement("SELECT player FROM `" + UUIDPLAYER_TABLE + "` WHERE `uuid` = ? ");
+            stmt.setString(1, uuid.toString());
+            res = stmt.executeQuery();
+            if (res.last())
+            {
+                ret = res.getString("player");
+            }
+        }
+        catch (SQLException ex)
+        {
+            BungeePEX.getLogger().log(Level.SEVERE, "Could not execute query", ex);
+        }
+        finally
+        {
+            storageBackend.getPoolManager().close(connection, stmt, res);
+        }
+
+        return ret;
+    }
+
+    @Override
+    public void update(UUID uuid, String player)
+    {
+        Connection connection = null;
+        PreparedStatement stmt = null;
+        try {
+
+            connection = storageBackend.getPoolManager().getConnection();
+            stmt = connection.prepareStatement("DELETE FROM `" + UUIDPLAYER_TABLE + "` WHERE `uuid` = ? OR `player` = ?");
+            stmt.setString(1, uuid.toString());
+            stmt.setString(2, player);
+            stmt.execute();
+            stmt.close();
+
+            stmt = connection.prepareStatement("INSERT IGNORE INTO `" + UUIDPLAYER_TABLE + "` (uuid, player) VALUES (?,?)");
+            stmt.setString(1, uuid.toString());
+            stmt.setString(2, player);
+            stmt.execute();
+            stmt.close();
+
+        } catch (SQLException ex) {
+            BungeePEX.getLogger().log(Level.SEVERE, "Could not update uuid table", ex);
+        } finally {
+            storageBackend.getPoolManager().close(connection, stmt, null);
+        }
+
+    }
+
+    @Override
+    public Map<UUID, String> getAll()
+    {
+        Map<UUID, String> ret = new HashMap<>();
+        Connection connection = null;
+        PreparedStatement stmt = null;
+        ResultSet res = null;
+        try
+        {
+            connection = storageBackend.getPoolManager().getConnection();
+            stmt = connection.prepareStatement("SELECT uuid, player FROM `" + UUIDPLAYER_TABLE + "`");
+            res = stmt.executeQuery();
+            while (res.next())
+            {
+                UUID uuid = UUID.fromString(res.getString("uuid"));
+                String name = res.getString("player");
+
+                ret.put(uuid, name);
+            }
+        }
+        catch (SQLException ex)
+        {
+            BungeePEX.getLogger().log(Level.SEVERE, "Could not execute query", ex);
+        }
+        finally
+        {
+            storageBackend.getPoolManager().close(connection, stmt, res);
+        }
+
+        return ret;
+    }
+
+    @Override
+    public void clear()
+    {
+        storageBackend.runQuery("TRUNCATE " + UUIDPLAYER_TABLE);
+    }
+
 
     public static StorageBackend getStorageBackend() {
         return storageBackend;

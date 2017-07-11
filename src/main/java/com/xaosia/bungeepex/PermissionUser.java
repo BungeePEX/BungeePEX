@@ -851,4 +851,14 @@ public class PermissionUser implements PermEntity {
         return permmap;
     }
 
+    public List<String> getExtraPerms() //todo: remove
+    {
+        return perms;
+    }
+
+    public void setExtraPerms(List<String> perms) //todo: remove
+    {
+        this.perms = perms;
+    }
+
 }

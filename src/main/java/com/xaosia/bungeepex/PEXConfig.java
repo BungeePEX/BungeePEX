@@ -24,7 +24,7 @@ public class PEXConfig {
 
     //db
     private BackEndType backEndType;
-    private UUIDPlayerDBType UUIDPlayerDBType;
+    //private UUIDPlayerDBType UUIDPlayerDBType;
     private String tablePrefix;
     private int fetcherCooldown;
     private boolean saveAllUsers;
@@ -60,14 +60,14 @@ public class PEXConfig {
     {
         config.load();
 
-        //perms
-        useUUIDs = config.getBoolean("useUUIDs", false);
+        //perms, use UUIDs by default
+        useUUIDs = config.getBoolean("useUUIDs", true); //todo: force uuid usage?
         useRegexPerms = config.getBoolean("useregexperms", false);
         groupPermission = config.getBoolean("grouppermission", true);
 
         //db
         backEndType = config.getEnumValue("backendtype", BackEndType.YAML);
-        UUIDPlayerDBType = config.getEnumValue("uuidplayerdb", UUIDPlayerDBType.YAML);
+        //UUIDPlayerDBType = config.getEnumValue("uuidplayerdb", UUIDPlayerDBType.YAML);
         tablePrefix = config.getString("tablePrefix", "bungeeperms_");
         fetcherCooldown = config.getInt("uuidfetcher.cooldown", 3000);
         saveAllUsers = config.getBoolean("saveAllUsers", true);
@@ -77,7 +77,7 @@ public class PEXConfig {
         notifyPromote = config.getBoolean("notify.promote", false);
         notifyDemote = config.getBoolean("notify.demote", false);
         tabComplete = config.getBoolean("tabcomplete", false);
-        locale = Locale.forLanguageTag(config.getString("locale", Statics.localeString(new Locale("en", "GB"))));
+        locale = Locale.forLanguageTag(config.getString("locale", Statics.localeString(new Locale("en", "US"))));
         terminatePrefixReset = config.getBoolean("terminate.prefix.reset", true);
         terminateSuffixReset = config.getBoolean("terminate.suffix.reset", true);
         terminatePrefixSpace = config.getBoolean("terminate.prefix.space", true);
@@ -90,16 +90,16 @@ public class PEXConfig {
         //other
         asyncCommands = config.getBoolean("async-commands", true);
 
-        validate();
+        //validate();
     }
 
-    public void validate()
+    /*public void validate()
     {
         if(useUUIDs && UUIDPlayerDBType == UUIDPlayerDBType.None)
         {
             BungeePEX.getLogger().warning(Lang.translate(Lang.MessageType.MISCONFIGURATION) + ": " + Lang.translate(Lang.MessageType.MISCONFIG_USEUUID_NONE_UUID_DB));
         }
-    }
+    }*/
 
     public void setUseUUIDs(boolean useUUIDs)
     {
@@ -108,12 +108,12 @@ public class PEXConfig {
         config.save();
     }
 
-    public void setUUIDPlayerDB(UUIDPlayerDBType type)
+    /*public void setUUIDPlayerDB(UUIDPlayerDBType type)
     {
         this.UUIDPlayerDBType = type;
         config.setEnumValue("uuidplayerdb", type);
         config.save();
-    }
+    }*/
 
     public void setBackendType(BackEndType type)
     {

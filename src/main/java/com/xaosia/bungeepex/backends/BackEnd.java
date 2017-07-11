@@ -1,6 +1,7 @@
 package com.xaosia.bungeepex.backends;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import com.xaosia.bungeepex.PermissionGroup;
 import com.xaosia.bungeepex.PermissionUser;
@@ -85,4 +86,12 @@ public interface BackEnd
     public void format(List<PermissionGroup> groups, List<PermissionUser> users, int version);
 
     public void clearDatabase();
+
+    //uuid db stuff
+    public UUID getUUID(String player);
+    public String getPlayerName(UUID uuid);
+    public void update(UUID uuid, String player);
+
+    public Map<UUID, String> getAll();
+    public void clear();
 }
