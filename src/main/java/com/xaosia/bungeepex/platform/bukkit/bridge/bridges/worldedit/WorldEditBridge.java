@@ -1,0 +1,104 @@
+package com.xaosia.bungeepex.platform.bukkit.bridge.bridges.worldedit;
+
+import com.sk89q.worldedit.bukkit.WorldEditPlugin;
+import java.lang.reflect.Field;
+import java.util.List;
+import com.xaosia.bungeepex.BungeePEX;
+import com.xaosia.bungeepex.platform.bukkit.BukkitPlugin;
+import com.xaosia.bungeepex.platform.bukkit.bridge.Bridge;
+import org.bukkit.Bukkit;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.server.PluginDisableEvent;
+import org.bukkit.event.server.PluginEnableEvent;
+import org.bukkit.plugin.Plugin;
+
+public class WorldEditBridge implements Bridge
+{
+
+    @Override
+    public void enable()
+    {
+        Bukkit.getPluginManager().registerEvents(this, BukkitPlugin.getInstance());
+        Plugin plugin = Bukkit.getPluginManager().getPlugin("WorldEdit");
+        if (plugin != null)
+        {
+            inject(plugin);
+        }
+    }
+
+    @Override
+    public void disable()
+    {
+        Plugin plugin = Bukkit.getPluginManager().getPlugin("WorldEdit");
+        if (plugin != null)
+        {
+            uninject(plugin);
+        }
+
+        PluginEnableEvent.getHandlerList().unregister(this);
+        PluginDisableEvent.getHandlerList().unregister(this);
+    }
+
+    @EventHandler
+    public void onPluginEnable(PluginEnableEvent e)
+    {
+        if (!e.getPlugin().getName().equalsIgnoreCase("worldedit"))
+        {
+            return;
+        }
+        inject(e.getPlugin());
+    }
+
+    @EventHandler
+    public void onPluginDisable(PluginDisableEvent e)
+    {
+        if (!e.getPlugin().getName().equalsIgnoreCase("worldedit"))
+        {
+            return;
+        }
+        uninject(e.getPlugin());
+    }
+
+    public void inject(Plugin plugin)
+    {
+        BungeePEX.getLogger().info("Injection of BungeePEX into WorldEdit"); //todo even more lang support
+        try
+        {
+            WorldEditPlugin we = (WorldEditPlugin) plugin;
+            
+            if(!we.isEnabled())
+            {
+                return;
+            }
+
+            //inject BungeePerms
+            Field f = we.getPermissionsResolver().getClass().getDeclaredField("enabledResolvers");
+            f.setAccessible(true);
+            ((List) f.get(we.getPermissionsResolver())).add(BungeePermsResolver.class);
+
+            we.getPermissionsResolver().findResolver();
+        }
+        catch (Exception ex)
+        {
+        }
+    }
+
+    public void uninject(Plugin plugin)
+    {
+        BungeePEX.getLogger().info("Uninjection of BungeePEX into WorldEdit");
+        try
+        {
+            WorldEditPlugin we = (WorldEditPlugin) plugin;
+
+            //inject BungeePerms
+            Field f = we.getPermissionsResolver().getClass().getDeclaredField("enabledResolvers");
+            f.setAccessible(true);
+            ((List) f.get(we.getPermissionsResolver())).remove(BungeePermsResolver.class);
+
+            we.getPermissionsResolver().findResolver();
+        }
+        catch (Exception ex)//todo report error
+        {
+        }
+    }
+}

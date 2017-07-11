@@ -1,0 +1,106 @@
+package com.xaosia.bungeepex.platform.bukkit.utils;
+
+import java.lang.reflect.Field;
+import com.xaosia.bungeepex.BungeePEX;
+import com.xaosia.bungeepex.platform.bukkit.BukkitPrivilege;
+import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.permissions.Permissible;
+
+public class Injector {
+
+    public static void inject(CommandSender sender, Permissible newpermissible)
+    {
+        try
+        {
+            Field perm = getPermField(sender);
+            if (perm == null)
+            {
+                return;
+            }
+            perm.setAccessible(true);
+            perm.set(sender, newpermissible);
+        }
+        catch (Exception e)
+        {
+            BungeePEX.getInstance().getDebug().log(e);
+        }
+    }
+
+    public static void uninject(CommandSender sender)
+    {
+        Permissible perm = getPermissible(sender);
+        if (perm instanceof BukkitPrivilege)
+        {
+            BukkitPrivilege p = (BukkitPrivilege) perm;
+            p.uninject();
+        }
+    }
+
+    public static Permissible getPermissible(CommandSender sender)
+    {
+        try
+        {
+            Field perm = getPermField(sender);
+            if (perm == null)
+            {
+                return null;
+            }
+            perm.setAccessible(true);
+            Permissible permissible = (Permissible) perm.get(sender);
+
+            return permissible;
+        }
+        catch (Exception e)
+        {
+            BungeePEX.getInstance().getDebug().log(e);
+        }
+        return null;
+    }
+
+    private static Field getPermField(CommandSender sender)
+    {
+        Field perm = null;
+        try
+        {
+            if (sender instanceof Player)
+            {
+                perm = Class.forName(getVersionedClassName("entity.CraftHumanEntity")).getDeclaredField("perm");
+            }
+            else if (sender instanceof ConsoleCommandSender)
+            {
+                perm = Class.forName(getVersionedClassName("command.ServerCommandSender")).getDeclaredField("perm");
+            }
+        }
+        catch (Exception e)
+        {
+            BungeePEX.getInstance().getDebug().log(e);
+        }
+        return perm;
+    }
+
+    private static String getVersionedClassName(String classname)
+    {
+        String version;
+
+        Class serverClass = Bukkit.getServer().getClass();
+        if (!serverClass.getSimpleName().equals("CraftServer"))
+        {
+            return null;
+        }
+        else if (serverClass.getName().equals("org.bukkit.craftbukkit.CraftServer"))
+        {
+            version = ".";
+        }
+        else
+        {
+            version = serverClass.getName().substring("org.bukkit.craftbukkit".length());
+            version = version.substring(0, version.length() - "CraftServer".length());
+        }
+
+        return "org.bukkit.craftbukkit" + version + classname;
+    }
+
+}

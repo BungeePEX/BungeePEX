@@ -1,0 +1,13 @@
+name: BungeePEX
+main: com.xaosia.bungeepex.platform.bukkit.BukkitPlugin
+version: '${build.fullversion.resource}'
+author: XAOS-IA
+load: startup
+
+commands:
+    bungeepexsbukkitbridge:
+        description: base command
+        aliases: bpexbb
+    bungeepexbukkitbridge reload:
+        description: reinjects BungeePEX into all found/supported plugins
+        
