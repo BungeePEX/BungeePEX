@@ -1,15 +1,19 @@
-package net.alpenblock.bungeeperms;
+package com.xaosia.bungeepex.commands;
 
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import net.alpenblock.bungeeperms.Lang.MessageType;
-import net.alpenblock.bungeeperms.platform.MessageEncoder;
-import net.alpenblock.bungeeperms.platform.MessageEncoder.ClickEvent;
-import net.alpenblock.bungeeperms.platform.MessageEncoder.HoverEvent;
-import net.alpenblock.bungeeperms.platform.PlatformPlugin;
-import net.alpenblock.bungeeperms.platform.Sender;
+
+import com.xaosia.bungeepex.BungeePEX;
+import com.xaosia.bungeepex.utils.ChatColor;
+import com.xaosia.bungeepex.utils.Lang;
+import com.xaosia.bungeepex.utils.Lang.MessageType;
+import com.xaosia.bungeepex.platform.MessageEncoder;
+import com.xaosia.bungeepex.platform.MessageEncoder.ClickEvent;
+import com.xaosia.bungeepex.platform.MessageEncoder.HoverEvent;
+import com.xaosia.bungeepex.platform.PlatformPlugin;
+import com.xaosia.bungeepex.platform.Sender;
 
 public class HelpProvider
 {
@@ -19,50 +23,50 @@ public class HelpProvider
 
     static
     {
-        HELP_ENTRIES.add(new HelpEntry(null,/*                                   */ makeClickCommand("/bp", Lang.translate(MessageType.HELP_WELCOME))));
-        HELP_ENTRIES.add(new HelpEntry("bungeeperms.help",/*                     */ makeSuggestCommand("/bp help [page]", Lang.translate(MessageType.HELP_HELP))));
-        HELP_ENTRIES.add(new HelpEntry("bungeeperms.reload",/*                   */ makeClickCommand("/bp reload", Lang.translate(MessageType.HELP_RELOAD))));
-        HELP_ENTRIES.add(new HelpEntry("bungeeperms.debug",/*                    */ makeSuggestCommand("/bp debug <true|false>", Lang.translate(MessageType.HELP_DEBUG))));
-        HELP_ENTRIES.add(new HelpEntry("bungeeperms.users",/*                    */ makeSuggestCommand("/bp users [-c]", Lang.translate(MessageType.HELP_USERS))));
-        HELP_ENTRIES.add(new HelpEntry("bungeeperms.user.info",/*                */ makeSuggestCommand("/bp user <user> info [server [world]]", Lang.translate(MessageType.HELP_USER_INFO))));
-        HELP_ENTRIES.add(new HelpEntry("bungeeperms.user.delete",/*              */ makeSuggestCommand("/bp user <user> delete", Lang.translate(MessageType.HELP_USER_DELETE))));
-        HELP_ENTRIES.add(new HelpEntry("bungeeperms.user.display",/*             */ makeSuggestCommand("/bp user <user> display [displayname [server [world]]]", Lang.translate(MessageType.HELP_USER_DISPLAY))));
-        HELP_ENTRIES.add(new HelpEntry("bungeeperms.user.prefix",/*              */ makeSuggestCommand("/bp user <user> prefix [prefix [server [world]]]", Lang.translate(MessageType.HELP_USER_PREFIX))));
-        HELP_ENTRIES.add(new HelpEntry("bungeeperms.user.suffix",/*              */ makeSuggestCommand("/bp user <user> suffix [suffix [server [world]]]", Lang.translate(MessageType.HELP_USER_SUFFIX))));
-        HELP_ENTRIES.add(new HelpEntry("bungeeperms.user.perms.add",/*           */ makeSuggestCommand("/bp user <user> addperm <perm> [server [world]]", Lang.translate(MessageType.HELP_USER_ADDPERM))));
-        HELP_ENTRIES.add(new HelpEntry("bungeeperms.user.perms.remove",/*        */ makeSuggestCommand("/bp user <user> removeperm <perm> [server [world]]", Lang.translate(MessageType.HELP_USER_REMOVEPERM))));
-        HELP_ENTRIES.add(new HelpEntry("bungeeperms.user.perms.has",/*           */ makeSuggestCommand("/bp user <user> has <perm> [server [world]]",Lang.translate(MessageType.HELP_USER_HAS))));
-        HELP_ENTRIES.add(new HelpEntry("bungeeperms.user.perms.list",/*          */ makeSuggestCommand("/bp user <user> list [server [world]]", Lang.translate(MessageType.HELP_USER_LIST))));
-        HELP_ENTRIES.add(new HelpEntry("bungeeperms.user.group.add",/*           */ makeSuggestCommand("/bp user <user> addgroup <group>",Lang.translate(MessageType.HELP_USER_ADDGROUP))));
-        HELP_ENTRIES.add(new HelpEntry("bungeeperms.user.group.remove",/*        */ makeSuggestCommand("/bp user <user> removegroup <group>", Lang.translate(MessageType.HELP_USER_REMOVEGROUP))));
-        HELP_ENTRIES.add(new HelpEntry("bungeeperms.user.group.set",/*           */ makeSuggestCommand("/bp user <user> setgroup <group>", Lang.translate(MessageType.HELP_USER_SETGROUP))));
-        HELP_ENTRIES.add(new HelpEntry("bungeeperms.user.groups",/*              */ makeSuggestCommand("/bp user <user> groups", Lang.translate(MessageType.HELP_USER_GROUPS))));
-        HELP_ENTRIES.add(new HelpEntry("bungeeperms.groups",/*                   */ makeClickCommand("/bp groups", Lang.translate(MessageType.HELP_GROUPS))));
-        HELP_ENTRIES.add(new HelpEntry("bungeeperms.group.info",/*               */ makeSuggestCommand("/bp group <group> info [server [world]]", Lang.translate(MessageType.HELP_GROUP_INFO))));
-        HELP_ENTRIES.add(new HelpEntry("bungeeperms.group.users",/*              */ makeSuggestCommand("/bp group <group> users [-c]", Lang.translate(MessageType.HELP_GROUP_USERS))));
-        HELP_ENTRIES.add(new HelpEntry("bungeeperms.group.create",/*             */ makeSuggestCommand("/bp group <group> create", Lang.translate(MessageType.HELP_GROUP_CREATE))));
-        HELP_ENTRIES.add(new HelpEntry("bungeeperms.group.delete",/*             */ makeSuggestCommand("/bp group <group> delete", Lang.translate(MessageType.HELP_GROUP_DELETE))));
-        HELP_ENTRIES.add(new HelpEntry("bungeeperms.group.inheritances.add",/*   */ makeSuggestCommand("/bp group <group> addinherit <addgroup>", Lang.translate(MessageType.HELP_GROUP_ADDINHERIT))));
-        HELP_ENTRIES.add(new HelpEntry("bungeeperms.group.inheritances.remove",/**/ makeSuggestCommand("/bp group <group> removeinherit <removegroup>", Lang.translate(MessageType.HELP_GROUP_REMOVEINHERIT))));
-        HELP_ENTRIES.add(new HelpEntry("bungeeperms.group.rank",/*               */ makeSuggestCommand("/bp group <group> rank <new rank>", Lang.translate(MessageType.HELP_GROUP_RANK))));
-        HELP_ENTRIES.add(new HelpEntry("bungeeperms.group.weight",/*             */ makeSuggestCommand("/bp group <group> weight <new weight>",Lang.translate(MessageType.HELP_GROUP_WEIGHT))));
-        HELP_ENTRIES.add(new HelpEntry("bungeeperms.group.ladder",/*             */ makeSuggestCommand("/bp group <group> ladder <new ladder>", Lang.translate(MessageType.HELP_GROUP_LADDER))));
-        HELP_ENTRIES.add(new HelpEntry("bungeeperms.group.default",/*            */ makeSuggestCommand("/bp group <group> default <true|false>", Lang.translate(MessageType.HELP_GROUP_DEFAULT))));
-        HELP_ENTRIES.add(new HelpEntry("bungeeperms.group.display",/*            */ makeSuggestCommand("/bp group <group> display [displayname [server [world]]]",Lang.translate(MessageType.HELP_GROUP_DISPLAY))));
-        HELP_ENTRIES.add(new HelpEntry("bungeeperms.group.prefix",/*             */ makeSuggestCommand("/bp group <group> prefix [prefix [server [world]]]", Lang.translate(MessageType.HELP_GROUP_PREFIX))));
-        HELP_ENTRIES.add(new HelpEntry("bungeeperms.group.suffix",/*             */ makeSuggestCommand("/bp group <group> suffix [suffix [server [world]]]", Lang.translate(MessageType.HELP_GROUP_SUFFIX))));
-        HELP_ENTRIES.add(new HelpEntry("bungeeperms.group.perms.add",/*          */ makeSuggestCommand("/bp group <group> addperm <perm> [server [world]]", Lang.translate(MessageType.HELP_GROUP_ADDPERM))));
-        HELP_ENTRIES.add(new HelpEntry("bungeeperms.group.perms.remove",/*       */ makeSuggestCommand("/bp group <group> removeperm <perm> [server [world]]", Lang.translate(MessageType.HELP_GROUP_REMOVEPERM))));
-        HELP_ENTRIES.add(new HelpEntry("bungeeperms.group.perms.has",/*          */ makeSuggestCommand("/bp group <group> has <perm> [server [world]]", Lang.translate(MessageType.HELP_GROUP_HAS))));
-        HELP_ENTRIES.add(new HelpEntry("bungeeperms.group.perms.list",/*         */ makeSuggestCommand("/bp group <group> list",Lang.translate(MessageType.HELP_GROUP_LIST))));
-        HELP_ENTRIES.add(new HelpEntry("bungeeperms.promote",/*                  */ makeSuggestCommand("/bp promote <user> [ladder]",Lang.translate(MessageType.HELP_PROMOTE))));
-        HELP_ENTRIES.add(new HelpEntry("bungeeperms.demote",/*                   */ makeSuggestCommand("/bp demote <user> [ladder]", Lang.translate(MessageType.HELP_DEMOTE))));
-        HELP_ENTRIES.add(new HelpEntry("bungeeperms.format",/*                   */ makeClickCommand("/bp format", Lang.translate(MessageType.HELP_FORMAT))));
-        HELP_ENTRIES.add(new HelpEntry("bungeeperms.cleanup",/*                  */ makeClickCommand("/bp cleanup",Lang.translate(MessageType.HELP_CLEANUP))));
-        HELP_ENTRIES.add(new HelpEntry("bungeeperms.migrate",/*                  */ makeSuggestCommand("/bp migrate <backend> [yaml|mysql|mysql2]", Lang.translate(MessageType.HELP_MIGRATE_BACKEND))));
-        HELP_ENTRIES.add(new HelpEntry("bungeeperms.migrate",/*                  */ makeSuggestCommand("/bp migrate <useuuid> [true|false]", Lang.translate(MessageType.HELP_MIGRATE_USEUUID))));
-        HELP_ENTRIES.add(new HelpEntry("bungeeperms.migrate",/*                  */ makeSuggestCommand("/bp migrate <uuidplayerdb> [None|YAML|MySQL]",Lang.translate(MessageType.HELP_MIGRATE_UUIDPLAYERDB))));
-        HELP_ENTRIES.add(new HelpEntry("bungeeperms.uuid",/*                     */ makeSuggestCommand("/bp uuid <player|uuid> [-rm]", Lang.translate(MessageType.HELP_UUID))));
+        HELP_ENTRIES.add(new HelpEntry(null,/*                                   */ makeClickCommand("/bpex", Lang.translate(MessageType.HELP_WELCOME))));
+        HELP_ENTRIES.add(new HelpEntry("bungeepex.help",/*                     */ makeSuggestCommand("/bpex help [page]", Lang.translate(MessageType.HELP_HELP))));
+        HELP_ENTRIES.add(new HelpEntry("bungeepex.reload",/*                   */ makeClickCommand("/bpex reload", Lang.translate(MessageType.HELP_RELOAD))));
+        HELP_ENTRIES.add(new HelpEntry("bungeepex.debug",/*                    */ makeSuggestCommand("/bpex debug <true|false>", Lang.translate(MessageType.HELP_DEBUG))));
+        HELP_ENTRIES.add(new HelpEntry("bungeepex.users",/*                    */ makeSuggestCommand("/bpex users [-c]", Lang.translate(MessageType.HELP_USERS))));
+        HELP_ENTRIES.add(new HelpEntry("bungeepex.user.info",/*                */ makeSuggestCommand("/bpex user <user> info [server [world]]", Lang.translate(MessageType.HELP_USER_INFO))));
+        HELP_ENTRIES.add(new HelpEntry("bungeepex.user.delete",/*              */ makeSuggestCommand("/bpex user <user> delete", Lang.translate(MessageType.HELP_USER_DELETE))));
+        HELP_ENTRIES.add(new HelpEntry("bungeepex.user.display",/*             */ makeSuggestCommand("/bpex user <user> display [displayname [server [world]]]", Lang.translate(MessageType.HELP_USER_DISPLAY))));
+        HELP_ENTRIES.add(new HelpEntry("bungeepex.user.prefix",/*              */ makeSuggestCommand("/bpex user <user> prefix [prefix [server [world]]]", Lang.translate(MessageType.HELP_USER_PREFIX))));
+        HELP_ENTRIES.add(new HelpEntry("bungeepex.user.suffix",/*              */ makeSuggestCommand("/bpex user <user> suffix [suffix [server [world]]]", Lang.translate(MessageType.HELP_USER_SUFFIX))));
+        HELP_ENTRIES.add(new HelpEntry("bungeepex.user.perms.add",/*           */ makeSuggestCommand("/bpex user <user> addperm <perm> [server [world]]", Lang.translate(MessageType.HELP_USER_ADDPERM))));
+        HELP_ENTRIES.add(new HelpEntry("bungeepex.user.perms.remove",/*        */ makeSuggestCommand("/bpex user <user> removeperm <perm> [server [world]]", Lang.translate(MessageType.HELP_USER_REMOVEPERM))));
+        HELP_ENTRIES.add(new HelpEntry("bungeepex.user.perms.has",/*           */ makeSuggestCommand("/bpex user <user> has <perm> [server [world]]",Lang.translate(MessageType.HELP_USER_HAS))));
+        HELP_ENTRIES.add(new HelpEntry("bungeepex.user.perms.list",/*          */ makeSuggestCommand("/bpex user <user> list [server [world]]", Lang.translate(MessageType.HELP_USER_LIST))));
+        HELP_ENTRIES.add(new HelpEntry("bungeepex.user.group.add",/*           */ makeSuggestCommand("/bpex user <user> addgroup <group>",Lang.translate(MessageType.HELP_USER_ADDGROUP))));
+        HELP_ENTRIES.add(new HelpEntry("bungeepex.user.group.remove",/*        */ makeSuggestCommand("/bpex user <user> removegroup <group>", Lang.translate(MessageType.HELP_USER_REMOVEGROUP))));
+        HELP_ENTRIES.add(new HelpEntry("bungeepex.user.group.set",/*           */ makeSuggestCommand("/bpex user <user> setgroup <group>", Lang.translate(MessageType.HELP_USER_SETGROUP))));
+        HELP_ENTRIES.add(new HelpEntry("bungeepex.user.groups",/*              */ makeSuggestCommand("/bpex user <user> groups", Lang.translate(MessageType.HELP_USER_GROUPS))));
+        HELP_ENTRIES.add(new HelpEntry("bungeepex.groups",/*                   */ makeClickCommand("/bpex groups", Lang.translate(MessageType.HELP_GROUPS))));
+        HELP_ENTRIES.add(new HelpEntry("bungeepex.group.info",/*               */ makeSuggestCommand("/bpex group <group> info [server [world]]", Lang.translate(MessageType.HELP_GROUP_INFO))));
+        HELP_ENTRIES.add(new HelpEntry("bungeepex.group.users",/*              */ makeSuggestCommand("/bpex group <group> users [-c]", Lang.translate(MessageType.HELP_GROUP_USERS))));
+        HELP_ENTRIES.add(new HelpEntry("bungeepex.group.create",/*             */ makeSuggestCommand("/bpex group <group> create", Lang.translate(MessageType.HELP_GROUP_CREATE))));
+        HELP_ENTRIES.add(new HelpEntry("bungeepex.group.delete",/*             */ makeSuggestCommand("/bpex group <group> delete", Lang.translate(MessageType.HELP_GROUP_DELETE))));
+        HELP_ENTRIES.add(new HelpEntry("bungeepex.group.inheritances.add",/*   */ makeSuggestCommand("/bpex group <group> addinherit <addgroup>", Lang.translate(MessageType.HELP_GROUP_ADDINHERIT))));
+        HELP_ENTRIES.add(new HelpEntry("bungeepex.group.inheritances.remove",/**/ makeSuggestCommand("/bpex group <group> removeinherit <removegroup>", Lang.translate(MessageType.HELP_GROUP_REMOVEINHERIT))));
+        HELP_ENTRIES.add(new HelpEntry("bungeepex.group.rank",/*               */ makeSuggestCommand("/bpex group <group> rank <new rank>", Lang.translate(MessageType.HELP_GROUP_RANK))));
+        HELP_ENTRIES.add(new HelpEntry("bungeepex.group.weight",/*             */ makeSuggestCommand("/bpex group <group> weight <new weight>",Lang.translate(MessageType.HELP_GROUP_WEIGHT))));
+        HELP_ENTRIES.add(new HelpEntry("bungeepex.group.ladder",/*             */ makeSuggestCommand("/bpex group <group> ladder <new ladder>", Lang.translate(MessageType.HELP_GROUP_LADDER))));
+        HELP_ENTRIES.add(new HelpEntry("bungeepex.group.default",/*            */ makeSuggestCommand("/bpex group <group> default <true|false>", Lang.translate(MessageType.HELP_GROUP_DEFAULT))));
+        HELP_ENTRIES.add(new HelpEntry("bungeepex.group.display",/*            */ makeSuggestCommand("/bpex group <group> display [displayname [server [world]]]",Lang.translate(MessageType.HELP_GROUP_DISPLAY))));
+        HELP_ENTRIES.add(new HelpEntry("bungeepex.group.prefix",/*             */ makeSuggestCommand("/bpex group <group> prefix [prefix [server [world]]]", Lang.translate(MessageType.HELP_GROUP_PREFIX))));
+        HELP_ENTRIES.add(new HelpEntry("bungeepex.group.suffix",/*             */ makeSuggestCommand("/bpex group <group> suffix [suffix [server [world]]]", Lang.translate(MessageType.HELP_GROUP_SUFFIX))));
+        HELP_ENTRIES.add(new HelpEntry("bungeepex.group.perms.add",/*          */ makeSuggestCommand("/bpex group <group> addperm <perm> [server [world]]", Lang.translate(MessageType.HELP_GROUP_ADDPERM))));
+        HELP_ENTRIES.add(new HelpEntry("bungeepex.group.perms.remove",/*       */ makeSuggestCommand("/bpex group <group> removeperm <perm> [server [world]]", Lang.translate(MessageType.HELP_GROUP_REMOVEPERM))));
+        HELP_ENTRIES.add(new HelpEntry("bungeepex.group.perms.has",/*          */ makeSuggestCommand("/bpex group <group> has <perm> [server [world]]", Lang.translate(MessageType.HELP_GROUP_HAS))));
+        HELP_ENTRIES.add(new HelpEntry("bungeepex.group.perms.list",/*         */ makeSuggestCommand("/bpex group <group> list",Lang.translate(MessageType.HELP_GROUP_LIST))));
+        HELP_ENTRIES.add(new HelpEntry("bungeepex.promote",/*                  */ makeSuggestCommand("/bpex promote <user> [ladder]",Lang.translate(MessageType.HELP_PROMOTE))));
+        HELP_ENTRIES.add(new HelpEntry("bungeepex.demote",/*                   */ makeSuggestCommand("/bpex demote <user> [ladder]", Lang.translate(MessageType.HELP_DEMOTE))));
+        HELP_ENTRIES.add(new HelpEntry("bungeepex.format",/*                   */ makeClickCommand("/bpex format", Lang.translate(MessageType.HELP_FORMAT))));
+        HELP_ENTRIES.add(new HelpEntry("bungeepex.cleanup",/*                  */ makeClickCommand("/bpex cleanup",Lang.translate(MessageType.HELP_CLEANUP))));
+        HELP_ENTRIES.add(new HelpEntry("bungeepex.migrate",/*                  */ makeSuggestCommand("/bpex migrate <backend> [yaml|mysql|mysql2]", Lang.translate(MessageType.HELP_MIGRATE_BACKEND))));
+        HELP_ENTRIES.add(new HelpEntry("bungeepex.migrate",/*                  */ makeSuggestCommand("/bpex migrate <useuuid> [true|false]", Lang.translate(MessageType.HELP_MIGRATE_USEUUID))));
+        HELP_ENTRIES.add(new HelpEntry("bungeepex.migrate",/*                  */ makeSuggestCommand("/bpex migrate <uuidplayerdb> [None|YAML|MySQL]",Lang.translate(MessageType.HELP_MIGRATE_UUIDPLAYERDB))));
+        HELP_ENTRIES.add(new HelpEntry("bungeepex.uuid",/*                     */ makeSuggestCommand("/bpex uuid <player|uuid> [-rm]", Lang.translate(MessageType.HELP_UUID))));
 // template        helpentries.add(new HelpEntry(null, makeClickCommand("/bp help", "Shows").color(ChatColor.GRAY)));
     }
 
@@ -106,7 +110,7 @@ public class HelpProvider
 
     private static PlatformPlugin plugin()
     {
-        return BungeePerms.getInstance().getPlugin();
+        return BungeePEX.getInstance().getPlugin();
     }
 
     private static MessageEncoder enc()
@@ -129,7 +133,7 @@ public class HelpProvider
         int index = -1;
         for (HelpEntry he : HELP_ENTRIES)
         {
-            if (he.getPermission() != null && !BungeePerms.getInstance().getPermissionsChecker().hasPermOrConsole(sender, he.getPermission()))
+            if (he.getPermission() != null && !BungeePEX.getInstance().getPermissionsChecker().hasPermOrConsole(sender, he.getPermission()))
             {
                 continue;
             }

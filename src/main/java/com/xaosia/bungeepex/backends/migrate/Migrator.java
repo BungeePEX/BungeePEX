@@ -1,18 +1,10 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-package net.alpenblock.bungeeperms.io.migrate;
+package com.xaosia.bungeepex.backends.migrate;
 
 import java.util.List;
-import net.alpenblock.bungeeperms.Group;
-import net.alpenblock.bungeeperms.User;
+import com.xaosia.bungeepex.PermissionGroup;
+import com.xaosia.bungeepex.PermissionUser;
 
-/**
- *
- * @author Alex
- */
 public interface Migrator
 {
-    public void migrate(final List<Group> groups, final List<User> users, final int permsversion);
+    public void migrate(final List<PermissionGroup> groups, final List<PermissionUser> users, final int permsversion);
 }

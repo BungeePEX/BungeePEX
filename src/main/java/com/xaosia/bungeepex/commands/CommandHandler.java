@@ -1,17 +1,24 @@
-package net.alpenblock.bungeeperms;
+package com.xaosia.bungeepex.commands;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
+import com.xaosia.bungeepex.*;
+import com.xaosia.bungeepex.backends.BackEnd;
+import com.xaosia.bungeepex.utils.ChatColor;
+import com.xaosia.bungeepex.utils.Color;
+import com.xaosia.bungeepex.utils.Lang;
+import com.xaosia.bungeepex.utils.Messages;
 import lombok.AllArgsConstructor;
-import net.alpenblock.bungeeperms.Lang.MessageType;
-import net.alpenblock.bungeeperms.io.BackEndType;
-import net.alpenblock.bungeeperms.io.UUIDPlayerDBType;
-import net.alpenblock.bungeeperms.platform.PlatformPlugin;
-import net.alpenblock.bungeeperms.platform.Sender;
-import net.alpenblock.bungeeperms.uuid.UUIDFetcher;
+
+import com.xaosia.bungeepex.utils.Lang.MessageType;
+import com.xaosia.bungeepex.backends.BackEndType;
+import com.xaosia.bungeepex.platform.PlatformPlugin;
+import com.xaosia.bungeepex.platform.Sender;
+import com.xaosia.bungeepex.uuid.UUIDFetcher;
 
 @AllArgsConstructor
 public class CommandHandler
@@ -19,23 +26,23 @@ public class CommandHandler
 
     protected PlatformPlugin plugin;
     protected PermissionsChecker checker;
-    protected BPConfig config;
+    protected PEXConfig config;
 
     public boolean onCommand(Sender sender, String cmd, String label, String[] args)
     {
-        if (!cmd.equalsIgnoreCase("bungeeperms"))
+        if (!cmd.equalsIgnoreCase("bungeepex"))
         {
             return false;
         }
 
-        if (BungeePerms.getInstance().getConfig().isDebug())
+        if (BungeePEX.getInstance().getConfig().isDebug())
         {
-            BungeePerms.getInstance().getPlugin().getLogger().info(sender.getName() + " issued bungeeperms command /" + cmd + " " + Statics.arrayToString(args, 0, args.length, " "));
+            BungeePEX.getInstance().getPlugin().getLogger().info(sender.getName() + " issued bungeepex command /" + cmd + " " + Statics.arrayToString(args, 0, args.length, " "));
         }
 
         if (args.length == 0)
         {
-            sender.sendMessage(Lang.translate(MessageType.BUNGEEPERMS));
+            sender.sendMessage(Lang.translate(MessageType.BUNGEEPEX));
             sender.sendMessage(Lang.translate(MessageType.VERSION, plugin.getVersion()));
             sender.sendMessage(Lang.translate(MessageType.AUTHOR, plugin.getAuthor()));
             return true;
@@ -100,9 +107,9 @@ public class CommandHandler
 
     private boolean handleHelp(Sender sender, String[] args)
     {
-        if (!checker.hasOrConsole(sender, "bungeeperms.help", true))
+        if (!checker.hasOrConsole(sender, "bungeepex.help", true))
         {
-//            showHelp(sender);
+            //showHelp(sender);
             return true;
         }
 
@@ -138,19 +145,19 @@ public class CommandHandler
 
     private boolean handleReload(Sender sender, String[] args)
     {
-        if (!checker.hasOrConsole(sender, "bungeeperms.reload", true))
+        if (!checker.hasOrConsole(sender, "bungeepex.reload", true))
         {
             return true;
         }
 
-        BungeePerms.getInstance().reload(true);
+        BungeePEX.getInstance().reload(true);
         sender.sendMessage(Lang.translate(MessageType.PERMISSIONS_RELOADED));
         return true;
     }
 
     private boolean handleDebug(Sender sender, String[] args)
     {
-        if (!checker.hasOrConsole(sender, "bungeeperms.debug", true))
+        if (!checker.hasOrConsole(sender, "bungeepex.debug", true))
         {
             return true;
         }
@@ -187,7 +194,7 @@ public class CommandHandler
 
     private boolean handleUsers(Sender sender, String[] args)
     {
-        if (!checker.hasOrConsole(sender, "bungeeperms.users.list", true))
+        if (!checker.hasOrConsole(sender, "bungeepex.users.list", true))
         {
             return true;
         }
@@ -300,15 +307,15 @@ public class CommandHandler
             {
                 args[0], args[1], args[3] + args[2], args[4]
             };
-            return onCommand(sender, "bungeeperms", "bp", newargs);
+            return onCommand(sender, "bungeepex", "bpex", newargs);
         }
         return false;
     }
 
-//user commands
+    //user commands
     private boolean handleUserCommandsList(Sender sender, String[] args)
     {
-        if (!checker.hasOrConsole(sender, "bungeeperms.user.perms.list", true))
+        if (!checker.hasOrConsole(sender, "bungeepex.user.perms.list", true))
         {
             return true;
         }
@@ -330,7 +337,7 @@ public class CommandHandler
         String server = args.length > (3 + (specialpage ? 1 : 0)) ? args[3].toLowerCase() : null;//todo tolower with config locale
         String world = args.length > (4 + (specialpage ? 1 : 0)) ? args[4].toLowerCase() : null;
 
-        User user = pm().getUser(player);
+        PermissionUser user = pm().getUser(player);
         if (user == null)
         {
             sender.sendMessage(Lang.translate(MessageType.ERR_USER_NOT_EXISTING, player));
@@ -345,11 +352,11 @@ public class CommandHandler
         {
             sender.sendMessage(Lang.translate(MessageType.USER_PERMISSIONS_LIST_HEADER, user.getName()));
         }
-        List<BPPermission> perms = user.getPermsWithOrigin(server, world);
+        List<Privilege> perms = user.getPermsWithOrigin(server, world);
         sender.sendMessage(Lang.translate(MessageType.PERMISSIONS_LIST_HEADER_PAGE, page, perms.size() / 20 + (perms.size() % 20 > 0 ? 1 : 0)));
         for (int i = (page - 1) * 20; i < page * 20 && i < perms.size(); i++)
         {
-            BPPermission perm = perms.get(i);
+            Privilege perm = perms.get(i);
             sender.sendMessage(Lang.translate(MessageType.PERMISSIONS_LIST_ITEM,
                                               perm.getPermission(),
                                               (!perm.isGroup() && perm.getOrigin().equalsIgnoreCase(player) ? Lang.translate(MessageType.OWN) : perm.getOrigin()),
@@ -361,7 +368,7 @@ public class CommandHandler
 
     private boolean handleUserCommandsGroups(Sender sender, String[] args)
     {
-        if (!checker.hasOrConsole(sender, "bungeeperms.user.groups", true))
+        if (!checker.hasOrConsole(sender, "bungeepex.user.groups", true))
         {
             return true;
         }
@@ -372,7 +379,7 @@ public class CommandHandler
         }
 
         String player = Statics.getFullPlayerName(args[1]);
-        User user = pm().getUser(player);
+        PermissionUser user = pm().getUser(player);
         if (user == null)
         {
             sender.sendMessage(Lang.translate(MessageType.ERR_USER_NOT_EXISTING, player));
@@ -380,7 +387,7 @@ public class CommandHandler
         }
 
         sender.sendMessage(Lang.translate(MessageType.USER_GROUPS_HEADER, user.getName()));
-        for (Group g : user.getGroups())
+        for (PermissionGroup g : user.getGroups())
         {
             sender.sendMessage(Color.Text + "- " + Color.Value + g.getName());
         }
@@ -389,7 +396,7 @@ public class CommandHandler
 
     private boolean handleUserCommandsInfo(Sender sender, String[] args)
     {
-        if (!checker.hasOrConsole(sender, "bungeeperms.user.info", true))
+        if (!checker.hasOrConsole(sender, "bungeepex.user.info", true))
         {
             return true;
         }
@@ -403,7 +410,7 @@ public class CommandHandler
         String server = args.length > 3 ? args[3].toLowerCase() : null;
         String world = args.length > 4 ? args[4].toLowerCase() : null;
 
-        User user = pm().getUser(player);
+        PermissionUser user = pm().getUser(player);
         if (user == null)
         {
             sender.sendMessage(Lang.translate(MessageType.ERR_USER_NOT_EXISTING, player));
@@ -431,7 +438,7 @@ public class CommandHandler
         Permable perm = user;
         if (server != null)
         {
-            perm = ((User) perm).getServer(server);
+            perm = ((PermissionUser) perm).getServer(server);
             if (world != null)
             {
                 perm = ((Server) perm).getWorld(world);
@@ -459,7 +466,7 @@ public class CommandHandler
 
     private boolean handleUserCommandsDelete(Sender sender, String[] args)
     {
-        if (!checker.hasOrConsole(sender, "bungeeperms.user.delete", true))
+        if (!checker.hasOrConsole(sender, "bungeepex.user.delete", true))
         {
             return true;
         }
@@ -470,7 +477,7 @@ public class CommandHandler
         }
 
         String player = Statics.getFullPlayerName(args[1]);
-        User user = pm().getUser(player);
+        PermissionUser user = pm().getUser(player);
         if (user == null)
         {
             sender.sendMessage(Lang.translate(MessageType.ERR_USER_NOT_EXISTING, player));
@@ -485,7 +492,7 @@ public class CommandHandler
 
     private boolean handleUserCommandsPermAdd(Sender sender, String[] args)
     {
-        if (!checker.hasOrConsole(sender, "bungeeperms.user.perms.add", true))
+        if (!checker.hasOrConsole(sender, "bungeepex.user.perms.add", true))
         {
             return true;
         }
@@ -499,7 +506,7 @@ public class CommandHandler
         String perm = args[3].toLowerCase();
         String server = args.length > 4 ? args[4].toLowerCase() : null;
         String world = args.length > 5 ? args[5].toLowerCase() : null;
-        User user = pm().getUser(player);
+        PermissionUser user = pm().getUser(player);
         if (user == null)
         {
             sender.sendMessage(Lang.translate(MessageType.ERR_USER_NOT_EXISTING, player));
@@ -569,7 +576,7 @@ public class CommandHandler
 
     private boolean handleUserCommandsPermRemove(Sender sender, String[] args)
     {
-        if (!checker.hasOrConsole(sender, "bungeeperms.user.perms.remove", true))
+        if (!checker.hasOrConsole(sender, "bungeepex.user.perms.remove", true))
         {
             return true;
         }
@@ -583,7 +590,7 @@ public class CommandHandler
         String perm = args[3].toLowerCase();
         String server = args.length > 4 ? args[4].toLowerCase() : null;
         String world = args.length > 5 ? args[5].toLowerCase() : null;
-        User user = pm().getUser(player);
+        PermissionUser user = pm().getUser(player);
         if (user == null)
         {
             sender.sendMessage(Lang.translate(MessageType.ERR_USER_NOT_EXISTING, player));
@@ -653,7 +660,7 @@ public class CommandHandler
 
     private boolean handleUserCommandsHas(Sender sender, String[] args)
     {
-        if (!checker.hasOrConsole(sender, "bungeeperms.user.perms.has", true))
+        if (!checker.hasOrConsole(sender, "bungeepex.user.perms.has", true))
         {
             return true;
         }
@@ -667,7 +674,7 @@ public class CommandHandler
         String perm = args[3].toLowerCase();
         String server = args.length > 4 ? args[4].toLowerCase() : null;
         String world = args.length > 5 ? args[5].toLowerCase() : null;
-        User user = pm().getUser(player);
+        PermissionUser user = pm().getUser(player);
         if (user == null)
         {
             sender.sendMessage(Lang.translate(MessageType.ERR_USER_NOT_EXISTING, player));
@@ -699,7 +706,7 @@ public class CommandHandler
 
     private boolean handleUserCommandsGroupAdd(Sender sender, String[] args)
     {
-        if (!checker.hasOrConsole(sender, "bungeeperms.user.group.add", true))
+        if (!checker.hasOrConsole(sender, "bungeepex.user.group.add", true))
         {
             return true;
         }
@@ -711,22 +718,22 @@ public class CommandHandler
 
         String player = Statics.getFullPlayerName(args[1]);
         String groupname = args[3];
-        Group group = pm().getGroup(groupname);
+        PermissionGroup group = pm().getGroup(groupname);
         if (group == null)
         {
             sender.sendMessage(Lang.translate(MessageType.ERR_GROUP_NOT_EXISTING, groupname));
             return true;
         }
 
-        User u = pm().getUser(player);
+        PermissionUser u = pm().getUser(player);
         if (u == null)
         {
             sender.sendMessage(Lang.translate(MessageType.ERR_USER_NOT_EXISTING, player));
             return true;
         }
 
-        List<Group> groups = u.getGroups();
-        for (Group g : groups)
+        List<PermissionGroup> groups = u.getGroups();
+        for (PermissionGroup g : groups)
         {
             if (g.getName().equalsIgnoreCase(group.getName()))
             {
@@ -742,7 +749,7 @@ public class CommandHandler
 
     private boolean handleUserCommandsGroupRemove(Sender sender, String[] args)
     {
-        if (!checker.hasOrConsole(sender, "bungeeperms.user.group.remove", true))
+        if (!checker.hasOrConsole(sender, "bungeepex.user.group.remove", true))
         {
             return true;
         }
@@ -754,22 +761,22 @@ public class CommandHandler
 
         String player = Statics.getFullPlayerName(args[1]);
         String groupname = args[3];
-        Group group = pm().getGroup(groupname);
+        PermissionGroup group = pm().getGroup(groupname);
         if (group == null)
         {
             sender.sendMessage(Lang.translate(MessageType.ERR_GROUP_NOT_EXISTING, groupname));
             return true;
         }
 
-        User u = pm().getUser(player);
+        PermissionUser u = pm().getUser(player);
         if (u == null)
         {
             sender.sendMessage(Lang.translate(MessageType.ERR_USER_NOT_EXISTING, player));
             return true;
         }
 
-        List<Group> groups = u.getGroups();
-        for (Group g : groups)
+        List<PermissionGroup> groups = u.getGroups();
+        for (PermissionGroup g : groups)
         {
             if (g.getName().equalsIgnoreCase(group.getName()))
             {
@@ -784,7 +791,7 @@ public class CommandHandler
 
     private boolean handleUserCommandsGroupSet(Sender sender, String[] args)
     {
-        if (!checker.hasOrConsole(sender, "bungeeperms.user.group.set", true))
+        if (!checker.hasOrConsole(sender, "bungeepex.user.group.set", true))
         {
             return true;
         }
@@ -796,22 +803,22 @@ public class CommandHandler
 
         String player = Statics.getFullPlayerName(args[1]);
         String groupname = args[3];
-        Group group = pm().getGroup(groupname);
+        PermissionGroup group = pm().getGroup(groupname);
         if (group == null)
         {
             sender.sendMessage(Lang.translate(MessageType.ERR_GROUP_NOT_EXISTING, groupname));
             return true;
         }
 
-        User u = pm().getUser(player);
+        PermissionUser u = pm().getUser(player);
         if (u == null)
         {
             sender.sendMessage(Lang.translate(MessageType.ERR_USER_NOT_EXISTING, player));
             return true;
         }
 
-        List<Group> laddergroups = pm().getLadderGroups(group.getLadder());
-        for (Group g : laddergroups)
+        List<PermissionGroup> laddergroups = pm().getLadderGroups(group.getLadder());
+        for (PermissionGroup g : laddergroups)
         {
             pm().removeUserGroup(u, g);
         }
@@ -823,7 +830,7 @@ public class CommandHandler
 
     private boolean handleUserCommandsDisplay(Sender sender, String[] args)
     {
-        if (!checker.hasOrConsole(sender, "bungeeperms.user.display", true))
+        if (!checker.hasOrConsole(sender, "bungeepex.user.display", true))
         {
             return true;
         }
@@ -837,7 +844,7 @@ public class CommandHandler
         String display = args.length > 3 ? args[3] : null;
         String server = args.length > 4 ? args[4].toLowerCase() : null;
         String world = args.length > 5 ? args[5].toLowerCase() : null;
-        User user = pm().getUser(player);
+        PermissionUser user = pm().getUser(player);
         if (user == null)
         {
             sender.sendMessage(Lang.translate(MessageType.ERR_USER_NOT_EXISTING, player));
@@ -850,7 +857,7 @@ public class CommandHandler
 
     private boolean handleUserCommandsPrefix(Sender sender, String[] args)
     {
-        if (!checker.hasOrConsole(sender, "bungeeperms.user.prefix", true))
+        if (!checker.hasOrConsole(sender, "bungeepex.user.prefix", true))
         {
             return true;
         }
@@ -864,7 +871,7 @@ public class CommandHandler
         String prefix = args.length > 3 ? args[3] : null;
         String server = args.length > 4 ? args[4].toLowerCase() : null;
         String world = args.length > 5 ? args[5].toLowerCase() : null;
-        User user = pm().getUser(player);
+        PermissionUser user = pm().getUser(player);
         if (user == null)
         {
             sender.sendMessage(Lang.translate(MessageType.ERR_USER_NOT_EXISTING, player));
@@ -877,7 +884,7 @@ public class CommandHandler
 
     private boolean handleUserCommandsSuffix(Sender sender, String[] args)
     {
-        if (!checker.hasOrConsole(sender, "bungeeperms.user.suffix", true))
+        if (!checker.hasOrConsole(sender, "bungeepex.user.suffix", true))
         {
             return true;
         }
@@ -891,7 +898,7 @@ public class CommandHandler
         String suffix = args.length > 3 ? args[3] : null;
         String server = args.length > 4 ? args[4].toLowerCase() : null;
         String world = args.length > 5 ? args[5].toLowerCase() : null;
-        User user = pm().getUser(player);
+        PermissionUser user = pm().getUser(player);
         if (user == null)
         {
             sender.sendMessage(Lang.translate(MessageType.ERR_USER_NOT_EXISTING, player));
@@ -901,11 +908,11 @@ public class CommandHandler
         sender.sendMessage(Lang.translate(MessageType.USER_SET_SUFFIX, user.getName()));
         return true;
     }
-//end user commands
+    //end user commands
 
     private boolean handleGroups(Sender sender, String[] args)
     {
-        if (!checker.hasOrConsole(sender, "bungeeperms.groups", true))
+        if (!checker.hasOrConsole(sender, "bungeepex.groups", true))
         {
             return true;
         }
@@ -924,7 +931,7 @@ public class CommandHandler
             sender.sendMessage(Lang.translate(MessageType.GROUPS_LIST_HEADER));
             for (String l : pm().getLadders())
             {
-                for (Group g : pm().getLadderGroups(l))
+                for (PermissionGroup g : pm().getLadderGroups(l))
                 {
                     sender.sendMessage(Color.Text + "- " + Color.Value + g.getName() + Color.Text + " (" + Color.Value + l + Color.Text + ")");
                 }
@@ -1022,15 +1029,15 @@ public class CommandHandler
             {
                 args[0], args[1], args[3] + args[2], args[4]
             };
-            return onCommand(sender, "bungeeperms", "bp", newargs);
+            return onCommand(sender, "bungeepex", "bpex", newargs);
         }
         return false;
     }
 
-//group commands
+    //group commands
     private boolean handleGroupCommandsList(Sender sender, String[] args)
     {
-        if (!checker.hasOrConsole(sender, "bungeeperms.group.perms.list", true))
+        if (!checker.hasOrConsole(sender, "bungeepex.group.perms.list", true))
         {
             return true;
         }
@@ -1051,7 +1058,7 @@ public class CommandHandler
         String groupname = args[1];
         String server = args.length > (3 + (specialpage ? 1 : 0)) ? args[3].toLowerCase() : null;
         String world = args.length > (4 + (specialpage ? 1 : 0)) ? args[4].toLowerCase() : null;
-        Group group = pm().getGroup(groupname);
+        PermissionGroup group = pm().getGroup(groupname);
 
         if (group == null)
         {
@@ -1060,11 +1067,11 @@ public class CommandHandler
         }
 
         sender.sendMessage(Lang.translate(MessageType.GROUP_PERMISSIONS_LIST_HEADER, group.getName()));
-        List<BPPermission> perms = group.getPermsWithOrigin(server, world);
+        List<Privilege> perms = group.getPermsWithOrigin(server, world);
         sender.sendMessage(Lang.translate(MessageType.PERMISSIONS_LIST_HEADER_PAGE, page, perms.size() / 20 + (perms.size() % 20 > 0 ? 1 : 0)));
         for (int i = (page - 1) * 20; i < page * 20 && i < perms.size(); i++)
         {
-            BPPermission perm = perms.get(i);
+            Privilege perm = perms.get(i);
             sender.sendMessage(Lang.translate(MessageType.PERMISSIONS_LIST_ITEM,
                                               perm.getPermission(),
                                               (!perm.getOrigin().equalsIgnoreCase(groupname) ? Lang.translate(MessageType.OWN) : perm.getOrigin()),
@@ -1076,7 +1083,7 @@ public class CommandHandler
 
     private boolean handleGroupCommandsInfo(Sender sender, String[] args)
     {
-        if (!checker.hasOrConsole(sender, "bungeeperms.group.info", true))
+        if (!checker.hasOrConsole(sender, "bungeepex.group.info", true))
         {
             return true;
         }
@@ -1090,7 +1097,7 @@ public class CommandHandler
         String server = args.length > 3 ? args[3].toLowerCase() : null;
         String world = args.length > 4 ? args[4].toLowerCase() : null;
 
-        Group group = pm().getGroup(groupname);
+        PermissionGroup group = pm().getGroup(groupname);
         if (group == null)
         {
             sender.sendMessage(Lang.translate(MessageType.ERR_GROUP_NOT_EXISTING, groupname));
@@ -1133,7 +1140,7 @@ public class CommandHandler
         Permable perm = group;
         if (server != null)
         {
-            perm = ((Group) perm).getServer(server);
+            perm = ((PermissionGroup) perm).getServer(server);
             if (world != null)
             {
                 perm = ((Server) perm).getWorld(world);
@@ -1161,7 +1168,7 @@ public class CommandHandler
 
     private boolean handleGroupCommandsUsers(Sender sender, String[] args)
     {
-        if (!checker.hasOrConsole(sender, "bungeeperms.group.users", true))
+        if (!checker.hasOrConsole(sender, "bungeepex.group.users", true))
         {
             return true;
         }
@@ -1173,7 +1180,7 @@ public class CommandHandler
         }
 
         String groupname = args[1];
-        Group group = pm().getGroup(groupname);
+        PermissionGroup group = pm().getGroup(groupname);
         if (group == null)
         {
             sender.sendMessage(Lang.translate(MessageType.ERR_GROUP_NOT_EXISTING, groupname));
@@ -1209,7 +1216,7 @@ public class CommandHandler
 
     private boolean handleGroupCommandsCreate(Sender sender, String[] args)
     {
-        if (!checker.hasOrConsole(sender, "bungeeperms.group.create", true))
+        if (!checker.hasOrConsole(sender, "bungeepex.group.create", true))
         {
             return true;
         }
@@ -1225,7 +1232,7 @@ public class CommandHandler
             sender.sendMessage(Lang.translate(MessageType.ERR_GROUP_NOT_EXISTING, groupname));
             return true;
         }
-        Group group = new Group(groupname, new ArrayList<String>(), new ArrayList<String>(), new HashMap<String, Server>(), 1000, 1000, "default", false, null, null, null);
+        PermissionGroup group = new PermissionGroup(groupname, new ArrayList<String>(), new ArrayList<String>(), new HashMap<String, Server>(), 1000, 1000, "default", false, null, null, null);
         pm().addGroup(group);
         sender.sendMessage(Lang.translate(MessageType.GROUP_CREATED, groupname));
         return true;
@@ -1233,7 +1240,7 @@ public class CommandHandler
 
     private boolean handleGroupCommandsDelete(Sender sender, String[] args)
     {
-        if (!checker.hasOrConsole(sender, "bungeeperms.group.delete", true))
+        if (!checker.hasOrConsole(sender, "bungeepex.group.delete", true))
         {
             return true;
         }
@@ -1244,7 +1251,7 @@ public class CommandHandler
         }
 
         String groupname = args[1];
-        Group group = pm().getGroup(groupname);
+        PermissionGroup group = pm().getGroup(groupname);
         if (group == null)
         {
             sender.sendMessage(Lang.translate(MessageType.ERR_GROUP_NOT_EXISTING, groupname));
@@ -1259,7 +1266,7 @@ public class CommandHandler
 
     private boolean handleGroupCommandsPermAdd(Sender sender, String[] args)
     {
-        if (!checker.hasOrConsole(sender, "bungeeperms.group.perms.add", true))
+        if (!checker.hasOrConsole(sender, "bungeepex.group.perms.add", true))
         {
             return true;
         }
@@ -1273,7 +1280,7 @@ public class CommandHandler
         String perm = args[3].toLowerCase();
         String server = args.length > 4 ? args[4].toLowerCase() : null;
         String world = args.length > 5 ? args[5].toLowerCase() : null;
-        Group group = pm().getGroup(groupname);
+        PermissionGroup group = pm().getGroup(groupname);
         if (group == null)
         {
             sender.sendMessage(Lang.translate(MessageType.ERR_GROUP_NOT_EXISTING, groupname));
@@ -1349,7 +1356,7 @@ public class CommandHandler
 
     private boolean handleGroupCommandsPermRemove(Sender sender, String[] args)
     {
-        if (!checker.hasOrConsole(sender, "bungeeperms.group.perms.remove", true))
+        if (!checker.hasOrConsole(sender, "bungeepex.group.perms.remove", true))
         {
             return true;
         }
@@ -1363,7 +1370,7 @@ public class CommandHandler
         String perm = args[3].toLowerCase();
         String server = args.length > 4 ? args[4].toLowerCase() : null;
         String world = args.length > 5 ? args[5].toLowerCase() : null;
-        Group group = pm().getGroup(groupname);
+        PermissionGroup group = pm().getGroup(groupname);
         if (group == null)
         {
             sender.sendMessage(Lang.translate(MessageType.ERR_GROUP_NOT_EXISTING, groupname));
@@ -1437,7 +1444,7 @@ public class CommandHandler
 
     private boolean handleGroupCommandsHas(Sender sender, String[] args)
     {
-        if (!checker.hasOrConsole(sender, "bungeeperms.group.perms.has", true))
+        if (!checker.hasOrConsole(sender, "bungeepex.group.perms.has", true))
         {
             return true;
         }
@@ -1451,7 +1458,7 @@ public class CommandHandler
         String perm = args[3].toLowerCase();
         String server = args.length > 4 ? args[4].toLowerCase() : null;
         String world = args.length > 5 ? args[5].toLowerCase() : null;
-        Group group = pm().getGroup(groupname);
+        PermissionGroup group = pm().getGroup(groupname);
         if (group == null)
         {
             sender.sendMessage(Lang.translate(MessageType.ERR_GROUP_NOT_EXISTING, groupname));
@@ -1483,7 +1490,7 @@ public class CommandHandler
 
     private boolean handleGroupCommandsInheritAdd(Sender sender, String[] args)
     {
-        if (!checker.hasOrConsole(sender, "bungeeperms.group.inheritances.add", true))
+        if (!checker.hasOrConsole(sender, "bungeepex.group.inheritances.add", true))
         {
             return true;
         }
@@ -1497,14 +1504,14 @@ public class CommandHandler
         String addgroup = args[3];
 
         //check group existance
-        Group group = pm().getGroup(groupname);
+        PermissionGroup group = pm().getGroup(groupname);
         if (group == null)
         {
             sender.sendMessage(Lang.translate(MessageType.ERR_GROUP_NOT_EXISTING, groupname));
             return true;
         }
 
-        Group toadd = pm().getGroup(addgroup);
+        PermissionGroup toadd = pm().getGroup(addgroup);
         if (toadd == null)
         {
             sender.sendMessage(Lang.translate(MessageType.ERR_GROUP_NOT_EXISTING, addgroup));
@@ -1531,7 +1538,7 @@ public class CommandHandler
 
     private boolean handleGroupCommandsInheritRemove(Sender sender, String[] args)
     {
-        if (!checker.hasOrConsole(sender, "bungeeperms.group.inheritances.remove", true))
+        if (!checker.hasOrConsole(sender, "bungeepex.group.inheritances.remove", true))
         {
             return true;
         }
@@ -1544,14 +1551,14 @@ public class CommandHandler
         String groupname = args[1];
         String removegroup = args[3];
 
-        Group group = pm().getGroup(groupname);
+        PermissionGroup group = pm().getGroup(groupname);
         if (group == null)
         {
             sender.sendMessage(Lang.translate(MessageType.ERR_GROUP_NOT_EXISTING, groupname));
             return true;
         }
 
-        Group toremove = pm().getGroup(removegroup);
+        PermissionGroup toremove = pm().getGroup(removegroup);
         if (toremove == null)
         {
             sender.sendMessage(Lang.translate(MessageType.ERR_GROUP_NOT_EXISTING, removegroup));
@@ -1575,7 +1582,7 @@ public class CommandHandler
 
     private boolean handleGroupCommandsRank(Sender sender, String[] args)
     {
-        if (!checker.hasOrConsole(sender, "bungeeperms.group.rank", true))
+        if (!checker.hasOrConsole(sender, "bungeepex.group.rank", true))
         {
             return true;
         }
@@ -1601,7 +1608,7 @@ public class CommandHandler
             return true;
         }
 
-        Group group = pm().getGroup(groupname);
+        PermissionGroup group = pm().getGroup(groupname);
         if (group == null)
         {
             sender.sendMessage(Lang.translate(MessageType.ERR_GROUP_NOT_EXISTING, groupname));
@@ -1615,7 +1622,7 @@ public class CommandHandler
 
     private boolean handleGroupCommandsWeight(Sender sender, String[] args)
     {
-        if (!checker.hasOrConsole(sender, "bungeeperms.group.weight", true))
+        if (!checker.hasOrConsole(sender, "bungeepex.group.weight", true))
         {
             return true;
         }
@@ -1640,7 +1647,7 @@ public class CommandHandler
             sender.sendMessage(Lang.translate(MessageType.ERR_INVALID_INT_VALUE));
             return true;
         }
-        Group group = pm().getGroup(groupname);
+        PermissionGroup group = pm().getGroup(groupname);
         if (group == null)
         {
             sender.sendMessage(Lang.translate(MessageType.ERR_GROUP_NOT_EXISTING, groupname));
@@ -1654,7 +1661,7 @@ public class CommandHandler
 
     private boolean handleGroupCommandsLadder(Sender sender, String[] args)
     {
-        if (!checker.hasOrConsole(sender, "bungeeperms.group.ladder", true))
+        if (!checker.hasOrConsole(sender, "bungeepex.group.ladder", true))
         {
             return true;
         }
@@ -1666,7 +1673,7 @@ public class CommandHandler
 
         String groupname = args[1];
         String ladder = args[3];
-        Group group = pm().getGroup(groupname);
+        PermissionGroup group = pm().getGroup(groupname);
         if (group == null)
         {
             sender.sendMessage(Lang.translate(MessageType.ERR_GROUP_NOT_EXISTING, groupname));
@@ -1679,7 +1686,7 @@ public class CommandHandler
 
     private boolean handleGroupCommandsDefault(Sender sender, String[] args)
     {
-        if (!checker.hasOrConsole(sender, "bungeeperms.group.default", true))
+        if (!checker.hasOrConsole(sender, "bungeepex.group.default", true))
         {
             return true;
         }
@@ -1701,7 +1708,7 @@ public class CommandHandler
             return true;
         }
 
-        Group group = pm().getGroup(groupname);
+        PermissionGroup group = pm().getGroup(groupname);
         if (group == null)
         {
             sender.sendMessage(Lang.translate(MessageType.ERR_GROUP_NOT_EXISTING, groupname));
@@ -1714,7 +1721,7 @@ public class CommandHandler
 
     private boolean handleGroupCommandsDisplay(Sender sender, String[] args)
     {
-        if (!checker.hasOrConsole(sender, "bungeeperms.group.display", true))
+        if (!checker.hasOrConsole(sender, "bungeepex.group.display", true))
         {
             return true;
         }
@@ -1728,7 +1735,7 @@ public class CommandHandler
         String display = args.length > 3 ? args[3] : null;
         String server = args.length > 4 ? args[4].toLowerCase() : null;
         String world = args.length > 5 ? args[5].toLowerCase() : null;
-        Group group = pm().getGroup(groupname);
+        PermissionGroup group = pm().getGroup(groupname);
         if (group == null)
         {
             sender.sendMessage(Lang.translate(MessageType.ERR_GROUP_NOT_EXISTING, groupname));
@@ -1741,7 +1748,7 @@ public class CommandHandler
 
     private boolean handleGroupCommandsPrefix(Sender sender, String[] args)
     {
-        if (!checker.hasOrConsole(sender, "bungeeperms.group.prefix", true))
+        if (!checker.hasOrConsole(sender, "bungeepex.group.prefix", true))
         {
             return true;
         }
@@ -1755,7 +1762,7 @@ public class CommandHandler
         String prefix = args.length > 3 ? args[3] : null;
         String server = args.length > 4 ? args[4].toLowerCase() : null;
         String world = args.length > 5 ? args[5].toLowerCase() : null;
-        Group group = pm().getGroup(groupname);
+        PermissionGroup group = pm().getGroup(groupname);
         if (group == null)
         {
             sender.sendMessage(Lang.translate(MessageType.ERR_GROUP_NOT_EXISTING, groupname));
@@ -1768,7 +1775,7 @@ public class CommandHandler
 
     private boolean handleGroupCommandsSuffix(Sender sender, String[] args)
     {
-        if (!checker.hasOrConsole(sender, "bungeeperms.group.suffix", true))
+        if (!checker.hasOrConsole(sender, "bungeepex.group.suffix", true))
         {
             return true;
         }
@@ -1782,7 +1789,7 @@ public class CommandHandler
         String suffix = args.length > 3 ? args[3] : null;
         String server = args.length > 4 ? args[4].toLowerCase() : null;
         String world = args.length > 5 ? args[5].toLowerCase() : null;
-        Group group = pm().getGroup(groupname);
+        PermissionGroup group = pm().getGroup(groupname);
         if (group == null)
         {
             sender.sendMessage(Lang.translate(MessageType.ERR_GROUP_NOT_EXISTING, groupname));
@@ -1792,11 +1799,11 @@ public class CommandHandler
         sender.sendMessage(Lang.translate(MessageType.GROUP_SET_SUFFIX, group.getName()));
         return true;
     }
-//end group commands
+    //end group commands
 
     private boolean handlePromote(Sender sender, String[] args)
     {
-        if (!checker.hasOrConsole(sender, "bungeeperms.promote", true))
+        if (!checker.hasOrConsole(sender, "bungeepex.promote", true))
         {
             return true;
         }
@@ -1809,7 +1816,7 @@ public class CommandHandler
 
         //get user
         String player = Statics.getFullPlayerName(args[1]);
-        User user = pm().getUser(player);
+        PermissionUser user = pm().getUser(player);
         if (user == null)
         {
             sender.sendMessage(Lang.translate(MessageType.ERR_USER_NOT_EXISTING, player));
@@ -1817,8 +1824,8 @@ public class CommandHandler
         }
 
         //get next group by ladder
-        Group playergroup = null;
-        Group nextgroup = null;
+        PermissionGroup playergroup = null;
+        PermissionGroup nextgroup = null;
 
         //ladder specified by sender
         if (args.length == 3)
@@ -1831,7 +1838,7 @@ public class CommandHandler
             }
             else
             {
-                List<Group> laddergroups = pm().getLadderGroups(ladder);
+                List<PermissionGroup> laddergroups = pm().getLadderGroups(ladder);
                 if (!laddergroups.isEmpty())
                 {
                     nextgroup = laddergroups.get(0);
@@ -1858,7 +1865,7 @@ public class CommandHandler
         }
 
         //check permissions 
-        if (!checker.hasOrConsole(sender, "bungeeperms.promote." + nextgroup.getName(), true))
+        if (!checker.hasOrConsole(sender, "bungeepex.promote." + nextgroup.getName(), true))
         {
             return true;
         }
@@ -1866,13 +1873,13 @@ public class CommandHandler
         //permission checks if sender is a player
         if (sender.isPlayer())
         {
-            User issuer = pm().getUser(sender.getName());
+            PermissionUser issuer = pm().getUser(sender.getName());
             if (issuer == null)
             {
                 sender.sendMessage(Lang.translate(MessageType.ERR_USER_YOU_NOT_EXISTING));
                 return true;
             }
-            Group issuergroup = pm().getMainGroup(issuer);
+            PermissionGroup issuergroup = pm().getMainGroup(issuer);
             if (issuergroup == null)
             {
                 sender.sendMessage(Lang.translate(MessageType.ERR_USER_YOU_NO_GROUPS));
@@ -1909,7 +1916,7 @@ public class CommandHandler
 
     private boolean handleDemote(Sender sender, String[] args)
     {
-        if (!checker.hasOrConsole(sender, "bungeeperms.demote", true))
+        if (!checker.hasOrConsole(sender, "bungeepex.demote", true))
         {
             return true;
         }
@@ -1922,7 +1929,7 @@ public class CommandHandler
 
         //get user
         String player = Statics.getFullPlayerName(args[1]);
-        User user = pm().getUser(player);
+        PermissionUser user = pm().getUser(player);
         if (user == null)
         {
             sender.sendMessage(Lang.translate(MessageType.ERR_USER_NOT_EXISTING, player));
@@ -1930,8 +1937,8 @@ public class CommandHandler
         }
 
         //get previous by ladder
-        Group playergroup = null;
-        Group previousgroup = null;
+        PermissionGroup playergroup = null;
+        PermissionGroup previousgroup = null;
 
         //ladder specified by sender
         if (args.length == 3)
@@ -1963,7 +1970,7 @@ public class CommandHandler
         }
 
         //check permissions
-        if (!checker.hasOrConsole(sender, "bungeeperms.demote." + previousgroup.getName(), true))
+        if (!checker.hasOrConsole(sender, "bungeepex.demote." + previousgroup.getName(), true))
         {
             return true;
         }
@@ -1971,13 +1978,13 @@ public class CommandHandler
         //permision checks if sender is a player
         if (sender.isPlayer())
         {
-            User issuer = pm().getUser(sender.getName());
+            PermissionUser issuer = pm().getUser(sender.getName());
             if (issuer == null)
             {
                 sender.sendMessage(Lang.translate(MessageType.ERR_USER_YOU_NOT_EXISTING));
                 return true;
             }
-            Group issuergroup = pm().getMainGroup(issuer);
+            PermissionGroup issuergroup = pm().getMainGroup(issuer);
             if (issuergroup == null)
             {
                 sender.sendMessage(Lang.translate(MessageType.ERR_USER_YOU_NO_GROUPS));
@@ -2013,7 +2020,7 @@ public class CommandHandler
 
     private boolean handleFormat(Sender sender, String[] args)
     {
-        if (!checker.hasOrConsole(sender, "bungeeperms.format", true))
+        if (!checker.hasOrConsole(sender, "bungeepex.format", true))
         {
             return true;
         }
@@ -2026,7 +2033,7 @@ public class CommandHandler
 
     private boolean handleCleanup(Sender sender, String[] args)
     {
-        if (!checker.hasOrConsole(sender, "bungeeperms.cleanup", true))
+        if (!checker.hasOrConsole(sender, "bungeepex.cleanup", true))
         {
             return true;
         }
@@ -2041,7 +2048,7 @@ public class CommandHandler
 
     private boolean handleMigrate(Sender sender, String[] args)
     {
-        if (!checker.hasOrConsole(sender, "bungeeperms.migrate", true))
+        if (!checker.hasOrConsole(sender, "bungeepex.migrate", true))
         {
             return true;
         }
@@ -2091,7 +2098,7 @@ public class CommandHandler
                 sender.sendMessage(Color.Error + "Invalid backend type! "
                         + Color.Value + BackEndType.YAML.name() + Color.Error + " or "//, "
                         //                        + Color.Value + BackEndType.MySQL.name() + Color.Error + " or "
-                        + Color.Value + BackEndType.MySQL2.name() + Color.Error + " is required!");
+                        + Color.Value + BackEndType.MySQL.name() + Color.Error + " is required!");
                 return true;
             }
 
@@ -2170,7 +2177,7 @@ public class CommandHandler
                 sender.sendMessage(Color.Text + "Applying fetched data to player-uuid-database ...");
                 for (Map.Entry<String, UUID> e : uuids.entrySet())
                 {
-                    pm().getUUIDPlayerDB().update(e.getValue(), e.getKey());
+                    pm().getBackEnd().update(e.getValue(), e.getKey());
                 }
                 sender.sendMessage(Color.Message + "Finished applying of fetched data to player-uuid-database.");
             }
@@ -2194,7 +2201,7 @@ public class CommandHandler
                 sender.sendMessage(Color.Text + "Applying fetched data to player-uuid-database ...");
                 for (Map.Entry<UUID, String> e : playernames.entrySet())
                 {
-                    pm().getUUIDPlayerDB().update(e.getKey(), e.getValue());
+                    pm().getBackEnd().update(e.getKey(), e.getValue());
                 }
                 sender.sendMessage(Color.Message + "Finished applying of fetched data to player-uuid-database.");
             }
@@ -2212,29 +2219,30 @@ public class CommandHandler
     {
         if (args.length == 2)
         {
-            sender.sendMessage(Color.Text + "Currently using " + Color.Value + pm().getUUIDPlayerDB().getType().name() + Color.Text + " as uuid player database");
+            sender.sendMessage(Color.Text + "Currently using " + Color.Value + pm().getBackEnd().getType().name() + Color.Text + " as uuid player database");
         }
         else if (args.length == 3)
         {
             String stype = args[2];
-            UUIDPlayerDBType type = UUIDPlayerDBType.getByName(stype);
+            //UUIDPlayerDBType type = UUIDPlayerDBType.getByName(stype);
+            BackEndType type = BackEndType.getByName(stype);
             if (type == null)
             {
                 sender.sendMessage(Color.Error + "Invalid backend type! "
-                        + Color.Value + UUIDPlayerDBType.None.name() + Color.Error + ", "
-                        + Color.Value + UUIDPlayerDBType.YAML.name() + Color.Error + " or "
-                        + Color.Value + UUIDPlayerDBType.MySQL.name() + Color.Error + " is required!");
+                        //+ Color.Value + BackEnd.None.name() + Color.Error + ", "
+                        + Color.Value + BackEndType.YAML.name() + Color.Error + " or "
+                        + Color.Value + BackEndType.MySQL.name() + Color.Error + " is required!");
                 return true;
             }
 
-            if (type == pm().getUUIDPlayerDB().getType())
+            if (type == pm().getBackEnd().getType())
             {
                 sender.sendMessage(Color.Error + "Invalid uuid-player-database type! You can't migrate to same type!");
                 return true;
             }
 
             sender.sendMessage(Color.Text + "Migrating uuid-player-database to " + Color.Value + type.name() + Color.Text + " ...");
-            pm().migrateUUIDPlayerDB(type);
+            pm().migrateUUIDPlayerDB();
             sender.sendMessage(Color.Message + "Finished migration.");
         }
         else
@@ -2246,7 +2254,7 @@ public class CommandHandler
 
     private boolean handleUUID(Sender sender, String[] args)
     {
-        if (!checker.hasOrConsole(sender, "bungeeperms.uuid", true))
+        if (!checker.hasOrConsole(sender, "bungeepex.uuid", true))
         {
             return true;
         }
@@ -2305,7 +2313,7 @@ public class CommandHandler
         }
         else if (!mojang && reverse)
         {
-            String name = pm().getUUIDPlayerDB().getPlayerName(uuidwhat);
+            String name = pm().getBackEnd().getPlayerName(uuidwhat);
             if (name == null)
             {
                 sender.sendMessage(Color.Text + "The UUID-player database does not know this player.");
@@ -2317,7 +2325,7 @@ public class CommandHandler
         }
         else if (!mojang && !reverse)
         {
-            UUID uuid = pm().getUUIDPlayerDB().getUUID(what);
+            UUID uuid = pm().getBackEnd().getUUID(what);
             if (uuid == null)
             {
                 sender.sendMessage(Color.Text + "The UUID-player database does not know this player.");
@@ -2332,7 +2340,7 @@ public class CommandHandler
 
     private PermissionsManager pm()
     {
-        return BungeePerms.getInstance().getPermissionsManager();
+        return BungeePEX.getInstance().getPermissionsManager();
     }
 
     private boolean parseTrueFalse(String truefalse)

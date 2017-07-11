@@ -1,34 +1,34 @@
-package net.alpenblock.bungeeperms.io.migrate;
+package com.xaosia.bungeepex.backends.migrate;
 
 import java.util.List;
-import net.alpenblock.bungeeperms.BPConfig;
-import net.alpenblock.bungeeperms.BungeePerms;
-import net.alpenblock.bungeeperms.Group;
-import net.alpenblock.bungeeperms.User;
-import net.alpenblock.bungeeperms.io.BackEnd;
-import net.alpenblock.bungeeperms.io.BackEndType;
-import net.alpenblock.bungeeperms.io.YAMLBackEnd;
+import com.xaosia.bungeepex.PEXConfig;
+import com.xaosia.bungeepex.BungeePEX;
+import com.xaosia.bungeepex.PermissionGroup;
+import com.xaosia.bungeepex.PermissionUser;
+import com.xaosia.bungeepex.backends.BackEnd;
+import com.xaosia.bungeepex.backends.BackEndType;
+import com.xaosia.bungeepex.backends.YAMLBackEnd;
 
 public class Migrate2YAML implements Migrator
 {
 
-    private final BPConfig config;
+    private final PEXConfig config;
 
-    public Migrate2YAML(BPConfig conf)
+    public Migrate2YAML(PEXConfig config)
     {
-        config = conf;
+        this.config = config;
     }
 
     @Override
-    public void migrate(final List<Group> groups, final List<User> users, final int permsversion)
+    public void migrate(final List<PermissionGroup> groups, final List<PermissionUser> users, final int permsversion)
     {
         BackEnd be = new YAMLBackEnd();
         be.clearDatabase();
-        for (Group group : groups)
+        for (PermissionGroup group : groups)
         {
             be.saveGroup(group, false);
         }
-        for (User user : users)
+        for (PermissionUser user : users)
         {
             be.saveUser(user, false);
         }
@@ -36,6 +36,6 @@ public class Migrate2YAML implements Migrator
 
         config.setBackendType(BackEndType.YAML);
 
-        BungeePerms.getInstance().getPermissionsManager().setBackEnd(be);
+        BungeePEX.getInstance().getPermissionsManager().setBackEnd(be);
     }
 }
