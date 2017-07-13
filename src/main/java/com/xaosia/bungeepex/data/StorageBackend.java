@@ -42,7 +42,7 @@ public class StorageBackend {
                             "`value` varchar(255) NOT NULL," +
                             "`server` varchar(64) DEFAULT NULL," +
                             "`world` varchar(64) DEFAULT NULL," +
-                            "PRIMARY KEY (`id`)," +
+                            "PRIMARY KEY (`id`)" +
                             ") ENGINE = InnoDB;").executeUpdate();
 
                     connection.prepareStatement("CREATE TABLE IF NOT EXISTS `uuidplayer` (" +
@@ -50,7 +50,7 @@ public class StorageBackend {
                             "`uuid` varchar(64) NOT NULL," +
                             "`player` varchar(32) DEFAULT NULL," +
                             "PRIMARY KEY (`id`)," +
-                            "KEY `uuid_index` (`uuid`)" +
+                            "KEY `uuid_index` (`uuid`)," +
                             "KEY `player_index` (`player`)" +
                             ") ENGINE = InnoDB;").executeUpdate();
 

@@ -68,7 +68,7 @@ public class PEXConfig {
         //db
         backEndType = config.getEnumValue("backendtype", BackEndType.YAML);
         //UUIDPlayerDBType = config.getEnumValue("uuidplayerdb", UUIDPlayerDBType.YAML);
-        tablePrefix = config.getString("tablePrefix", "bungeeperms_");
+        tablePrefix = config.getString("tablePrefix", "bungeepex_");
         fetcherCooldown = config.getInt("uuidfetcher.cooldown", 3000);
         saveAllUsers = config.getBoolean("saveAllUsers", true);
         deleteUsersOnCleanup = config.getBoolean("deleteUsersOnCleanup", false);
