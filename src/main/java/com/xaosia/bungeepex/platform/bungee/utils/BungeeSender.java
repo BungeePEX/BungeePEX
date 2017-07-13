@@ -1,11 +1,13 @@
-package net.alpenblock.bungeeperms.platform.bungee;
+package com.xaosia.bungeepex.platform.bungee.utils;
 
 import java.util.UUID;
+
+import com.xaosia.bungeepex.platform.bungee.listeners.BungeeEventListener;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import net.alpenblock.bungeeperms.BungeePerms;
-import net.alpenblock.bungeeperms.platform.MessageEncoder;
-import net.alpenblock.bungeeperms.platform.Sender;
+import com.xaosia.bungeepex.BungeePEX;
+import com.xaosia.bungeepex.platform.MessageEncoder;
+import com.xaosia.bungeepex.platform.Sender;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -27,9 +29,8 @@ public class BungeeSender implements Sender
     public void sendMessage(MessageEncoder encoder)
     {
         BungeeMessageEncoder e = (BungeeMessageEncoder) encoder;
-        if (BungeePerms.getInstance().getPlugin().isChatApiPresent())
+        if (BungeePEX.getInstance().getPlugin().isChatApiPresent())
         {
-
             BaseComponent[] converted = BungeeMessageEncoder.convert(e.create());
             sender.sendMessage(converted);
         }
@@ -80,7 +81,7 @@ public class BungeeSender implements Sender
     @Override
     public String getWorld()
     {
-        BungeeEventListener l = (BungeeEventListener) BungeePerms.getInstance().getEventListener();
+        BungeeEventListener l = (BungeeEventListener) BungeePEX.getInstance().getEventListener();
         return l.getPlayerWorlds().get(sender.getName());
     }
 

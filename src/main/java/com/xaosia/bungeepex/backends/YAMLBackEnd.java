@@ -33,13 +33,13 @@ public class YAMLBackEnd implements BackEnd {
         plugin = BungeePEX.getInstance().getPlugin();
         config = BungeePEX.getInstance().getConfig();
 
-        checkPermFile();
-
         permspath = "/permissions.yml";
         uuidpath = "/uuidplayerdb.yml";
 
         permsconf = new Config(plugin, permspath);
         uuidconf = new Config(plugin, uuidpath);
+
+        checkPermFile();
     }
 
     @Override

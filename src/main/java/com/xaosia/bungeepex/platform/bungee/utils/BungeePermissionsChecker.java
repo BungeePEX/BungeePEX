@@ -1,10 +1,13 @@
-package net.alpenblock.bungeeperms.platform.bungee;
+package com.xaosia.bungeepex.platform.bungee.utils;
 
 import lombok.AllArgsConstructor;
-import net.alpenblock.bungeeperms.Lang;
-import net.alpenblock.bungeeperms.PermissionsChecker;
-import net.alpenblock.bungeeperms.User;
+import com.xaosia.bungeepex.platform.bungee.BungeePlugin;
+import com.xaosia.bungeepex.platform.bungee.BungeeConfig;
+import com.xaosia.bungeepex.utils.Lang;
+import com.xaosia.bungeepex.PermissionsChecker;
+import com.xaosia.bungeepex.PermissionUser;
 import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 @AllArgsConstructor
@@ -13,7 +16,7 @@ public class BungeePermissionsChecker extends PermissionsChecker
 
     private final BungeeConfig config;
 
-//with messageout
+    //with messageout
     /**
      * Checks if a user (no console) has a specific permission (globally).
      *
@@ -61,7 +64,7 @@ public class BungeePermissionsChecker extends PermissionsChecker
     {
         if (sender instanceof ProxiedPlayer)
         {
-            User user = config.isUseUUIDs() ? pm().getUser(((ProxiedPlayer) sender).getUniqueId()) : pm().getUser(sender.getName());
+            PermissionUser user = config.isUseUUIDs() ? pm().getUser(((ProxiedPlayer) sender).getUniqueId()) : pm().getUser(sender.getName());
             if (((ProxiedPlayer) sender).getServer() == null)
             {
                 return user.hasPerm(permission);
@@ -82,7 +85,7 @@ public class BungeePermissionsChecker extends PermissionsChecker
     {
         if (sender instanceof ProxiedPlayer)
         {
-            User user = config.isUseUUIDs() ? pm().getUser(((ProxiedPlayer) sender).getUniqueId()) : pm().getUser(sender.getName());
+            PermissionUser user = config.isUseUUIDs() ? pm().getUser(((ProxiedPlayer) sender).getUniqueId()) : pm().getUser(sender.getName());
             if (((ProxiedPlayer) sender).getServer() == null)
             {
                 return user.hasPerm(permission);
@@ -107,7 +110,7 @@ public class BungeePermissionsChecker extends PermissionsChecker
     {
         if (sender instanceof ProxiedPlayer)
         {
-            User user = config.isUseUUIDs() ? pm().getUser(((ProxiedPlayer) sender).getUniqueId()) : pm().getUser(sender.getName());
+            PermissionUser user = config.isUseUUIDs() ? pm().getUser(((ProxiedPlayer) sender).getUniqueId()) : pm().getUser(sender.getName());
 
             //per server
             if (((ProxiedPlayer) sender).getServer() == null)
@@ -138,7 +141,7 @@ public class BungeePermissionsChecker extends PermissionsChecker
     {
         if (sender instanceof ProxiedPlayer)
         {
-            User user = config.isUseUUIDs() ? pm().getUser(((ProxiedPlayer) sender).getUniqueId()) : pm().getUser(sender.getName());
+            PermissionUser user = config.isUseUUIDs() ? pm().getUser(((ProxiedPlayer) sender).getUniqueId()) : pm().getUser(sender.getName());
             if (((ProxiedPlayer) sender).getServer() == null)
             {
                 return user.hasPerm(permission);
@@ -176,13 +179,13 @@ public class BungeePermissionsChecker extends PermissionsChecker
             boolean isperm = (hasPerm(sender, perm));
             if (!isperm && msg)
             {
-                sender.sendMessage(Lang.translate(Lang.MessageType.NO_PERM));
+                sender.sendMessage(new TextComponent(Lang.translate(Lang.MessageType.NO_PERM)));
             }
             return isperm;
         }
         else
         {
-            sender.sendMessage(Lang.translate(Lang.MessageType.NO_PERM));
+            sender.sendMessage(new TextComponent(Lang.translate(Lang.MessageType.NO_PERM)));
             return false;
         }
     }
@@ -200,7 +203,7 @@ public class BungeePermissionsChecker extends PermissionsChecker
         boolean isperm = hasPerm(sender, perm) || new BungeeSender(sender).isConsole();
         if (!isperm && msg)
         {
-            sender.sendMessage(Lang.translate(Lang.MessageType.NO_PERM));
+            sender.sendMessage(new TextComponent(Lang.translate(Lang.MessageType.NO_PERM)));
         }
         return isperm;
     }
@@ -220,13 +223,13 @@ public class BungeePermissionsChecker extends PermissionsChecker
             boolean isperm = hasPermOnServer(sender, perm);
             if (!isperm && msg)
             {
-                sender.sendMessage(Lang.translate(Lang.MessageType.NO_PERM));
+                sender.sendMessage(new TextComponent(Lang.translate(Lang.MessageType.NO_PERM)));
             }
             return isperm;
         }
         else
         {
-            sender.sendMessage(Lang.translate(Lang.MessageType.NO_PERM));
+            sender.sendMessage(new TextComponent(Lang.translate(Lang.MessageType.NO_PERM)));
             return false;
         }
     }
@@ -244,7 +247,7 @@ public class BungeePermissionsChecker extends PermissionsChecker
         boolean isperm = hasPermOnServer(sender, perm) || new BungeeSender(sender).isConsole();
         if (!isperm && msg)
         {
-            sender.sendMessage(Lang.translate(Lang.MessageType.NO_PERM));
+            sender.sendMessage(new TextComponent(Lang.translate(Lang.MessageType.NO_PERM)));
         }
         return isperm;
     }
@@ -264,13 +267,13 @@ public class BungeePermissionsChecker extends PermissionsChecker
             boolean isperm = hasPermOnServerInWorld(sender, perm);
             if (!isperm && msg)
             {
-                sender.sendMessage(Lang.translate(Lang.MessageType.NO_PERM));
+                sender.sendMessage(new TextComponent(Lang.translate(Lang.MessageType.NO_PERM)));
             }
             return isperm;
         }
         else
         {
-            sender.sendMessage(Lang.translate(Lang.MessageType.NO_PERM));
+            sender.sendMessage(new TextComponent(Lang.translate(Lang.MessageType.NO_PERM)));
             return false;
         }
     }
@@ -288,7 +291,7 @@ public class BungeePermissionsChecker extends PermissionsChecker
         boolean isperm = hasPermOnServerInWorld(sender, perm) || new BungeeSender(sender).isConsole();
         if (!isperm && msg)
         {
-            sender.sendMessage(Lang.translate(Lang.MessageType.NO_PERM));
+            sender.sendMessage(new TextComponent(Lang.translate(Lang.MessageType.NO_PERM)));
         }
         return isperm;
     }

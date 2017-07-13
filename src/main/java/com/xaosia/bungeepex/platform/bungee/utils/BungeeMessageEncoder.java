@@ -1,10 +1,10 @@
-package net.alpenblock.bungeeperms.platform.bungee;
+package com.xaosia.bungeepex.platform.bungee.utils;
 
 import java.util.ArrayList;
 import java.util.List;
-import net.alpenblock.bungeeperms.BungeePerms;
-import net.alpenblock.bungeeperms.ChatColor;
-import net.alpenblock.bungeeperms.platform.MessageEncoder;
+import com.xaosia.bungeepex.BungeePEX;
+import com.xaosia.bungeepex.utils.ChatColor;
+import com.xaosia.bungeepex.platform.MessageEncoder;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 
 public class BungeeMessageEncoder extends MessageEncoder
@@ -44,7 +44,7 @@ public class BungeeMessageEncoder extends MessageEncoder
             throw new IllegalArgumentException("original is not a BungeeMessageEncoder");
         }
 
-        if (BungeePerms.getInstance().getPlugin().isChatApiPresent())
+        if (BungeePEX.getInstance().getPlugin().isChatApiPresent())
         {
             builder = ((BungeeMessageEncoder) original).builder;
         }
@@ -56,7 +56,7 @@ public class BungeeMessageEncoder extends MessageEncoder
     public BungeeMessageEncoder(String text)
     {
         super(text);
-        if (BungeePerms.getInstance().getPlugin().isChatApiPresent())
+        if (BungeePEX.getInstance().getPlugin().isChatApiPresent())
         {
             builder = new ComponentBuilder(text);
         }
@@ -68,7 +68,7 @@ public class BungeeMessageEncoder extends MessageEncoder
     @Override
     public MessageEncoder append(String text)
     {
-        if (BungeePerms.getInstance().getPlugin().isChatApiPresent())
+        if (BungeePEX.getInstance().getPlugin().isChatApiPresent())
         {
             cache = null;
             builder = builder.append(text);
@@ -83,7 +83,7 @@ public class BungeeMessageEncoder extends MessageEncoder
     @Override
     public MessageEncoder color(ChatColor color)
     {
-        if (BungeePerms.getInstance().getPlugin().isChatApiPresent())
+        if (BungeePEX.getInstance().getPlugin().isChatApiPresent())
         {
             cache = null;
             builder = builder.color(net.md_5.bungee.api.ChatColor.valueOf(color.name()));
@@ -97,7 +97,7 @@ public class BungeeMessageEncoder extends MessageEncoder
     @Override
     public MessageEncoder bold(boolean bold)
     {
-        if (BungeePerms.getInstance().getPlugin().isChatApiPresent())
+        if (BungeePEX.getInstance().getPlugin().isChatApiPresent())
         {
             cache = null;
             builder = builder.bold(bold);
@@ -118,7 +118,7 @@ public class BungeeMessageEncoder extends MessageEncoder
     @Override
     public MessageEncoder italic(boolean italic)
     {
-        if (BungeePerms.getInstance().getPlugin().isChatApiPresent())
+        if (BungeePEX.getInstance().getPlugin().isChatApiPresent())
         {
             cache = null;
             builder = builder.italic(italic);
@@ -139,7 +139,7 @@ public class BungeeMessageEncoder extends MessageEncoder
     @Override
     public MessageEncoder underlined(boolean underlined)
     {
-        if (BungeePerms.getInstance().getPlugin().isChatApiPresent())
+        if (BungeePEX.getInstance().getPlugin().isChatApiPresent())
         {
             cache = null;
             builder = builder.underlined(underlined);
@@ -159,7 +159,7 @@ public class BungeeMessageEncoder extends MessageEncoder
     @Override
     public MessageEncoder strikethrough(boolean strikethrough)
     {
-        if (BungeePerms.getInstance().getPlugin().isChatApiPresent())
+        if (BungeePEX.getInstance().getPlugin().isChatApiPresent())
         {
             cache = null;
             builder = builder.strikethrough(strikethrough);
@@ -179,7 +179,7 @@ public class BungeeMessageEncoder extends MessageEncoder
     @Override
     public MessageEncoder obfuscated(boolean obfuscated)
     {
-        if (BungeePerms.getInstance().getPlugin().isChatApiPresent())
+        if (BungeePEX.getInstance().getPlugin().isChatApiPresent())
         {
             cache = null;
             builder = builder.obfuscated(obfuscated);
@@ -199,7 +199,7 @@ public class BungeeMessageEncoder extends MessageEncoder
     @Override
     public MessageEncoder event(ClickEvent clickEvent)
     {
-        if (BungeePerms.getInstance().getPlugin().isChatApiPresent())
+        if (BungeePEX.getInstance().getPlugin().isChatApiPresent())
         {
             if (clickEvent == null)
             {
@@ -219,7 +219,7 @@ public class BungeeMessageEncoder extends MessageEncoder
     @Override
     public MessageEncoder event(HoverEvent hoverEvent)
     {
-        if (BungeePerms.getInstance().getPlugin().isChatApiPresent())
+        if (BungeePEX.getInstance().getPlugin().isChatApiPresent())
         {
             if (hoverEvent == null)
             {

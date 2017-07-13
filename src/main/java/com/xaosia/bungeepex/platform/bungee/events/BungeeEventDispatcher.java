@@ -1,11 +1,8 @@
-package net.alpenblock.bungeeperms.platform.bungee;
+package com.xaosia.bungeepex.platform.bungee.events;
 
-import net.alpenblock.bungeeperms.Group;
-import net.alpenblock.bungeeperms.User;
-import net.alpenblock.bungeeperms.platform.EventDispatcher;
-import net.alpenblock.bungeeperms.platform.bungee.event.BungeePermsGroupChangedEvent;
-import net.alpenblock.bungeeperms.platform.bungee.event.BungeePermsReloadedEvent;
-import net.alpenblock.bungeeperms.platform.bungee.event.BungeePermsUserChangedEvent;
+import com.xaosia.bungeepex.PermissionGroup;
+import com.xaosia.bungeepex.PermissionUser;
+import com.xaosia.bungeepex.platform.EventDispatcher;
 import net.md_5.bungee.api.ProxyServer;
 
 public class BungeeEventDispatcher implements EventDispatcher
@@ -18,13 +15,13 @@ public class BungeeEventDispatcher implements EventDispatcher
     }
 
     @Override
-    public void dispatchGroupChangeEvent(Group g)
+    public void dispatchGroupChangeEvent(PermissionGroup g)
     {
         ProxyServer.getInstance().getPluginManager().callEvent(new BungeePermsGroupChangedEvent(g));
     }
 
     @Override
-    public void dispatchUserChangeEvent(User u)
+    public void dispatchUserChangeEvent(PermissionUser u)
     {
         ProxyServer.getInstance().getPluginManager().callEvent(new BungeePermsUserChangedEvent(u));
     }

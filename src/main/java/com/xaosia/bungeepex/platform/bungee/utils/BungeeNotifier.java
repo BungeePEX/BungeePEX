@@ -1,12 +1,14 @@
-package net.alpenblock.bungeeperms.platform.bungee;
+package com.xaosia.bungeepex.platform.bungee.utils;
 
 import java.util.UUID;
+
 import lombok.RequiredArgsConstructor;
-import net.alpenblock.bungeeperms.BungeePerms;
-import net.alpenblock.bungeeperms.Group;
-import net.alpenblock.bungeeperms.Statics;
-import net.alpenblock.bungeeperms.User;
-import net.alpenblock.bungeeperms.platform.NetworkNotifier;
+import com.xaosia.bungeepex.BungeePEX;
+import com.xaosia.bungeepex.platform.bungee.BungeeConfig;
+import com.xaosia.bungeepex.PermissionGroup;
+import com.xaosia.bungeepex.Statics;
+import com.xaosia.bungeepex.PermissionUser;
+import com.xaosia.bungeepex.platform.NetworkNotifier;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -18,7 +20,7 @@ public class BungeeNotifier implements NetworkNotifier
     private final BungeeConfig config;
 
     @Override
-    public void deleteUser(User u, String origin)
+    public void deleteUser(PermissionUser u, String origin)
     {
         if (config.isUseUUIDs())
         {
@@ -31,13 +33,13 @@ public class BungeeNotifier implements NetworkNotifier
     }
 
     @Override
-    public void deleteGroup(Group g, String origin)
+    public void deleteGroup(PermissionGroup g, String origin)
     {
         sendPMAll("deleteGroup;" + g.getName(), origin);
     }
 
     @Override
-    public void reloadUser(User u, String origin)
+    public void reloadUser(PermissionUser u, String origin)
     {
         if (config.isUseUUIDs())
         {
@@ -50,7 +52,7 @@ public class BungeeNotifier implements NetworkNotifier
     }
 
     @Override
-    public void reloadGroup(Group g, String origin)
+    public void reloadGroup(PermissionGroup g, String origin)
     {
         sendPMAll("reloadGroup;" + g.getName(), origin);
     }
@@ -112,7 +114,7 @@ public class BungeeNotifier implements NetworkNotifier
             }
 
             //send message
-            pp.getServer().getInfo().sendData(BungeePerms.CHANNEL, msg.getBytes());
+            pp.getServer().getInfo().sendData(BungeePEX.CHANNEL, msg.getBytes());
             sendConfig(pp.getServer().getInfo());
         }
     }
@@ -147,7 +149,7 @@ public class BungeeNotifier implements NetworkNotifier
             }
 
             //send message
-            pp.getServer().getInfo().sendData(BungeePerms.CHANNEL, msg.getBytes());
+            pp.getServer().getInfo().sendData(BungeePEX.CHANNEL, msg.getBytes());
             sendConfig(pp.getServer().getInfo());
         }
     }
@@ -181,7 +183,7 @@ public class BungeeNotifier implements NetworkNotifier
             }
 
             //send message
-            si.sendData(BungeePerms.CHANNEL, msg.getBytes());
+            si.sendData(BungeePEX.CHANNEL, msg.getBytes());
             sendConfig(si);
         }
     }
@@ -196,7 +198,7 @@ public class BungeeNotifier implements NetworkNotifier
             if (lastConfigUpdate + 5 * 60 * 1000 < now)
             {
                 lastConfigUpdate = now;
-                info.sendData(BungeePerms.CHANNEL, ("configcheck;" + info.getName() + ";" + config.getBackEndType() + ";" + config.getUUIDPlayerDBType() + ";" + config.isUseUUIDs()).getBytes());
+                info.sendData(BungeePEX.CHANNEL, ("configcheck;" + info.getName() + ";" + config.getBackEndType() + ";" + config.getBackEndType() + ";" + config.isUseUUIDs()).getBytes());
             }
         }
     }

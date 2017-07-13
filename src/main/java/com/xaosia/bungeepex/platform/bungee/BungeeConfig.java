@@ -1,14 +1,17 @@
-package net.alpenblock.bungeeperms.platform.bungee;
+package com.xaosia.bungeepex.platform.bungee;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+
+import com.xaosia.bungeepex.platform.bungee.utils.NetworkType;
 import lombok.Getter;
-import net.alpenblock.bungeeperms.BPConfig;
-import net.alpenblock.bungeeperms.Config;
+import com.xaosia.bungeepex.PEXConfig;
+import com.xaosia.bungeepex.utils.Config;
 
 @Getter
-public class BungeeConfig extends BPConfig
+public class BungeeConfig extends PEXConfig
 {
 
     private NetworkType networkType;

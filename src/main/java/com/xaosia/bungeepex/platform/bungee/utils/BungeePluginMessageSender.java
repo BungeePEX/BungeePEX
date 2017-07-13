@@ -1,7 +1,7 @@
-package net.alpenblock.bungeeperms.platform.bungee;
+package com.xaosia.bungeepex.platform.bungee.utils;
 
-import net.alpenblock.bungeeperms.BungeePerms;
-import net.alpenblock.bungeeperms.platform.PluginMessageSender;
+import com.xaosia.bungeepex.BungeePEX;
+import com.xaosia.bungeepex.platform.PluginMessageSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
 
@@ -14,7 +14,7 @@ public class BungeePluginMessageSender implements PluginMessageSender
         ServerInfo si = ProxyServer.getInstance().getServerInfo(target);
         if (si == null)
         {
-            BungeePerms.getLogger().info("No server found for " + target);
+            BungeePEX.getLogger().info("No server found for " + target);
             return;
         }
         

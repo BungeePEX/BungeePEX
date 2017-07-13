@@ -1,4 +1,4 @@
-package net.alpenblock.bungeeperms.platform.bungee.event;
+package com.xaosia.bungeepex.platform.bungee.events;
 
 import net.md_5.bungee.api.plugin.Event;
 

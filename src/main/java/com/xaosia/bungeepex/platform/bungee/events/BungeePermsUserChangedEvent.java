@@ -1,14 +1,13 @@
-package net.alpenblock.bungeeperms.platform.bungee.event;
+package com.xaosia.bungeepex.platform.bungee.events;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import net.alpenblock.bungeeperms.User;
+import com.xaosia.bungeepex.PermissionUser;
 import net.md_5.bungee.api.plugin.Event;
 
 @AllArgsConstructor
 public class BungeePermsUserChangedEvent extends Event
 {
-
     @Getter
-    private final User user;
+    private final PermissionUser user;
 }

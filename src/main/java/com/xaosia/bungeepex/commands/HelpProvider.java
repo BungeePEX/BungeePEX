@@ -63,9 +63,9 @@ public class HelpProvider
         HELP_ENTRIES.add(new HelpEntry("bungeepex.demote",/*                   */ makeSuggestCommand("/bpex demote <user> [ladder]", Lang.translate(MessageType.HELP_DEMOTE))));
         HELP_ENTRIES.add(new HelpEntry("bungeepex.format",/*                   */ makeClickCommand("/bpex format", Lang.translate(MessageType.HELP_FORMAT))));
         HELP_ENTRIES.add(new HelpEntry("bungeepex.cleanup",/*                  */ makeClickCommand("/bpex cleanup",Lang.translate(MessageType.HELP_CLEANUP))));
-        HELP_ENTRIES.add(new HelpEntry("bungeepex.migrate",/*                  */ makeSuggestCommand("/bpex migrate <backend> [yaml|mysql|mysql2]", Lang.translate(MessageType.HELP_MIGRATE_BACKEND))));
+        HELP_ENTRIES.add(new HelpEntry("bungeepex.migrate",/*                  */ makeSuggestCommand("/bpex migrate <backend> [YAML|MySQL]", Lang.translate(MessageType.HELP_MIGRATE_BACKEND))));
         HELP_ENTRIES.add(new HelpEntry("bungeepex.migrate",/*                  */ makeSuggestCommand("/bpex migrate <useuuid> [true|false]", Lang.translate(MessageType.HELP_MIGRATE_USEUUID))));
-        HELP_ENTRIES.add(new HelpEntry("bungeepex.migrate",/*                  */ makeSuggestCommand("/bpex migrate <uuidplayerdb> [None|YAML|MySQL]",Lang.translate(MessageType.HELP_MIGRATE_UUIDPLAYERDB))));
+        HELP_ENTRIES.add(new HelpEntry("bungeepex.migrate",/*                  */ makeSuggestCommand("/bpex migrate <uuidplayerdb> [YAML|MySQL]",Lang.translate(MessageType.HELP_MIGRATE_UUIDPLAYERDB))));
         HELP_ENTRIES.add(new HelpEntry("bungeepex.uuid",/*                     */ makeSuggestCommand("/bpex uuid <player|uuid> [-rm]", Lang.translate(MessageType.HELP_UUID))));
 // template        helpentries.add(new HelpEntry(null, makeClickCommand("/bp help", "Shows").color(ChatColor.GRAY)));
     }
@@ -120,8 +120,8 @@ public class HelpProvider
 
     public static void sendHelpHeader(Sender sender, int page)
     {
-        sender.sendMessage(enc().append("                  ------ BungeePerms - Help - Page " + (page + 1) + " -----").color(ChatColor.GOLD));
-        sender.sendMessage(enc().append("Aliases: ").color(ChatColor.GRAY).append("/bp").color(ChatColor.GOLD)
+        sender.sendMessage(enc().append("                  ------ BungeePEX - Help - Page " + (page + 1) + " -----").color(ChatColor.GOLD));
+        sender.sendMessage(enc().append("Aliases: ").color(ChatColor.GRAY).append("/bpex").color(ChatColor.GOLD)
                 .append("       ").color(ChatColor.GRAY).append("<required>").color(ChatColor.GOLD)
                 .append("       ").color(ChatColor.GRAY).append("[optional]").color(ChatColor.GOLD));
     }

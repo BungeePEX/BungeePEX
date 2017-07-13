@@ -1,4 +1,4 @@
 name: BungeePEX
 main: com.xaosia.bungeepex.platform.bungee.BungeePlugin
-version: '${build.fullversion.resource}'
+version: 1.0.0
 author: XAOS-IA

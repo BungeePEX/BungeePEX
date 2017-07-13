@@ -1,6 +1,6 @@
 name: BungeePEX
 main: com.xaosia.bungeepex.platform.bukkit.BukkitPlugin
-version: '${build.fullversion.resource}'
+version: 1.0.0
 author: XAOS-IA
 load: startup
 
