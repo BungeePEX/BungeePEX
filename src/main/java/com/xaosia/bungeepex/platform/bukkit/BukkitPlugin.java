@@ -58,8 +58,7 @@ public class BukkitPlugin extends JavaPlugin implements PlatformPlugin {
     private BridgeManager bridge;
 
     @Override
-    public void onLoad()
-    {
+    public void onLoad() {
         //static
         instance = this;
 
@@ -77,6 +76,12 @@ public class BukkitPlugin extends JavaPlugin implements PlatformPlugin {
         notifier = new BukkitNotifier(conf);
         pmsender = new BukkitPluginMessageSender();
 
+    }
+
+    @Override
+    public void onEnable()
+    {
+
         bungeepex = new BungeePEX(this, conf, pmsender, notifier, listener, dispatcher);
         bungeepex.load();
 
@@ -85,11 +90,7 @@ public class BukkitPlugin extends JavaPlugin implements PlatformPlugin {
         bridge.load();
         bungeepex.getPermissionsResolver().registerProcessor(new GroupProcessor());
         bungeepex.getPermissionsResolver().registerProcessor(new SuperPermsPreProcessor());
-    }
 
-    @Override
-    public void onEnable()
-    {
         Bukkit.getMessenger().registerIncomingPluginChannel(this, BungeePEX.CHANNEL, listener);
         Bukkit.getMessenger().registerOutgoingPluginChannel(this, BungeePEX.CHANNEL);
         bungeepex.enable();
@@ -297,7 +298,7 @@ public class BukkitPlugin extends JavaPlugin implements PlatformPlugin {
 
     @Override
     public void doAsync(Runnable r) {
-        getServer().getScheduler().runTaskAsynchronously(this, r);
+        Bukkit.getServer().getScheduler().runTaskAsynchronously(this, r);
     }
 
 }

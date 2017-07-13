@@ -2,7 +2,7 @@ name: BungeePEX
 main: com.xaosia.bungeepex.platform.bukkit.BukkitPlugin
 version: 1.0.0
 author: XAOS-IA
-load: startup
+load: STARTUP
 
 commands:
     bungeepexsbukkitbridge:
