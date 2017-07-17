@@ -119,19 +119,10 @@
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
+        <!-- pex repo -->
         <repository>
-            <id>repository</id>
-            <releases>
-                <enabled>true</enabled>
-                <checksumPolicy>ignore</checksumPolicy>
-                <updatePolicy>always</updatePolicy>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-                <checksumPolicy>ignore</checksumPolicy>
-                <updatePolicy>always</updatePolicy>
-            </snapshots>
-            <url>file://${project.basedir}/lib/repository/</url>
+            <id>pex-repo</id>
+            <url>https://pex-repo.aoeu.xyz</url>
         </repository>
     </repositories>
 
@@ -202,7 +193,7 @@
         <dependency>
             <groupId>com.mojang</groupId>
             <artifactId>AccountsClient</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>unspecified</version>
         </dependency>
         <dependency>
             <groupId>com.sk89q.worldedit</groupId>
